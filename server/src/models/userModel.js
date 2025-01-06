@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -17,6 +18,14 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true,
     minlength: [7, "Password must be longer than 6 characters"],
+  },
+  biography: {
+    type: String,
+    trim: "true",
+  },
+  avatar: {
+    type: String,
+    trim: true,
   },
 });
 

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { type } from "os";
 
 const userSchema = new mongoose.Schema({
@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  posts: [{ type: mongoose.Types.ObjectId, ref: "Post" }],
 });
 
 const User = mongoose.model("User", userSchema);

@@ -5,6 +5,7 @@ import "dotenv/config";
 import connectDB from "../server/src/config/db.js";
 import authRoutes from "../server/src/routes/authRoutes.js";
 import userRoutes from "../server/src/routes/userRoutes.js";
+import postRoutes from "../server/src/routes/postRoutes.js";
 
 const app = express();
 app.use(express.json());
@@ -22,6 +23,7 @@ async function startServer() {
 
     app.use("/api/auth", authRoutes);
     app.use("/api/users", userRoutes);
+    app.use("/api/posts", postRoutes);
     app.listen(port, () => {
       console.log(`Server running on ${port}`);
     });

@@ -7,6 +7,7 @@ import authRoutes from "../server/src/routes/authRoutes.js";
 import userRoutes from "../server/src/routes/userRoutes.js";
 import postRoutes from "../server/src/routes/postRoutes.js";
 import likeRoutes from "../server/src/routes/likeRoutes.js";
+import commentRoutes from "../server/src/routes/commentRoutes.js";
 
 const app = express();
 app.use(express.json());
@@ -26,6 +27,7 @@ async function startServer() {
     app.use("/api/users", userRoutes);
     app.use("/api/posts", postRoutes);
     app.use("/api/likes", likeRoutes);
+    app.use("/api/comments", commentRoutes);
     app.listen(port, () => {
       console.log(`Server running on ${port}`);
     });

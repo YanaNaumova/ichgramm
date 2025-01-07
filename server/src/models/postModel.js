@@ -8,6 +8,7 @@ const postSchema = new mongoose.Schema({
     trim: true,
   },
   user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
+  comments: [{ type: mongoose.Types.ObjectId, ref: "Comment" }],
 });
 
 const Post = mongoose.model("Post", postSchema);

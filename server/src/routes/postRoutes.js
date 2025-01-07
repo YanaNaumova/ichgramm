@@ -1,7 +1,7 @@
 import { Router } from "express";
 import authMiddleware from "../middelwares/authMiddelware.js";
 import {
-  getuserPosts,
+  getUserPosts,
   createPost,
   deletePost,
   getPostById,
@@ -12,7 +12,7 @@ import {
 
 const router = Router();
 
-router.get("/posts", authMiddleware, getuserPosts);
+router.get("/posts", authMiddleware, getUserPosts);
 router.post("/create", authMiddleware, uploadPostImages, createPost);
 router.delete("/post/:id", authMiddleware, deletePost);
 router.get("/post/:id", authMiddleware, getPostById);

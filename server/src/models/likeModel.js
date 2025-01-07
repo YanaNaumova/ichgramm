@@ -5,14 +5,11 @@ const likeSchema = new mongoose.Schema(
     user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
     post: { type: mongoose.Types.ObjectId, ref: "Post" },
     comment: { type: mongoose.Types.ObjectId, ref: "Comment" },
-    likesPostCounter: { type: Number, default: 0, required: true },
-    likesCommentCounter: { type: Number, default: 0, required: true },
   },
   { timestamps: true }
 );
 
 likeSchema.index({ user: 1, post: 1 }, { unique: true });
-likeSchema.index({ user: 1, comment: 1 }, { unique: true });
 
 const Like = mongoose.model("Like", likeSchema);
 

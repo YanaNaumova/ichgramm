@@ -12,11 +12,18 @@ export const uploadPostImages = upload.any();
 
 export async function getUserPosts(req, res) {
   try {
-    const posts = await Post.find();
+    const userId = req.user.id;
+    const user = await User.findById(userId).populate("posts");
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: `User with id ${userId} was not found` });
+    }
+    const posts = user.posts;
     if (posts.length === 0) {
       return res.status(200).json({ message: "No posts found", posts: [] });
     }
-    res.status(200).json(posts);
+    res.status(200).json({ message: `Was found ${posts.length} post`, posts });
   } catch (error) {
     res.status(500).json({ message: "Server internal error" });
   }
@@ -151,9 +158,19 @@ export async function updatePost(req, res) {
     await post.save();
     res
       .status(200)
-      .json({ message: `Post with id ${postId} was updated` }, post);
+      .json({ message: `Post with id ${postId} was updated`, post });
   } catch (error) {
     res.status(500).json({ message: "Server internaal error" });
   }
 }
-export async function getAllPosts(req, res) {}
+export async function getAllPosts(req, res) {
+  try {
+    const posts = await Post.find();
+    if (posts.length === 0) {
+      return res.status(200).json({ message: "No posts found", posts: [] });
+    }
+    res.status(200).json({ message: `Was found ${posts.length} post`, posts });
+  } catch (error) {
+    res.status(500).json({ message: "Server internal error" });
+  }
+}

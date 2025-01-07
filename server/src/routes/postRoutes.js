@@ -16,7 +16,7 @@ router.get("/posts", authMiddleware, getUserPosts);
 router.post("/create", authMiddleware, uploadPostImages, createPost);
 router.delete("/post/:id", authMiddleware, deletePost);
 router.get("/post/:id", authMiddleware, getPostById);
-router.put("/update/:id", authMiddleware, updatePost);
+router.put("/update/:id", authMiddleware, uploadPostImages, updatePost);
 router.get("/allposts", authMiddleware, getAllPosts);
 
 export default router;

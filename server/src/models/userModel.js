@@ -27,7 +27,8 @@ const userSchema = new mongoose.Schema({
     trim: true,
   },
   posts: [{ type: mongoose.Types.ObjectId, ref: "Post" }],
-  likes: [{ type: mongoose.Types.ObjectId, ref: "Like" }],
+  postLikes: [{ type: mongoose.Types.ObjectId, ref: "Like" }],
+  commentLikes: [{ type: mongoose.Types.ObjectId, ref: "Like" }],
 });
 
 const User = mongoose.model("User", userSchema);

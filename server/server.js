@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
@@ -8,6 +7,7 @@ import userRoutes from "../server/src/routes/userRoutes.js";
 import postRoutes from "../server/src/routes/postRoutes.js";
 import likeRoutes from "../server/src/routes/likeRoutes.js";
 import commentRoutes from "../server/src/routes/commentRoutes.js";
+import searchRoutes from "../server/src/routes/searchRoutes.js";
 
 const app = express();
 app.use(express.json());
@@ -28,6 +28,7 @@ async function startServer() {
     app.use("/api/posts", postRoutes);
     app.use("/api/likes", likeRoutes);
     app.use("/api/comments", commentRoutes);
+    app.use("/api/search", searchRoutes);
     app.listen(port, () => {
       console.log(`Server running on ${port}`);
     });

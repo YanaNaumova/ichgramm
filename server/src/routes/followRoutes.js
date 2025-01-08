@@ -12,6 +12,6 @@ const router = Router();
 router.post("/following", authMiddleware, addFollowing);
 router.post("/unfollow", authMiddleware, deleteFollowing);
 router.get("/followings", authMiddleware, getFollowings);
-router.get("followers", authMiddleware, getFollowers);
+router.get("/followers", authMiddleware, getFollowers);
 
 export default router;

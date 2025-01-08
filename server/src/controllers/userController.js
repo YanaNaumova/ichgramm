@@ -6,6 +6,7 @@ const upload = multer({
   storage: storage,
   limits: { fileSize: 5 * 1024 * 1024 },
 });
+// проверить поля в профайле
 export async function getProfile(req, res) {
   try {
     const { id } = req.params;

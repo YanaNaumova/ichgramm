@@ -8,6 +8,8 @@ import postRoutes from "../server/src/routes/postRoutes.js";
 import likeRoutes from "../server/src/routes/likeRoutes.js";
 import commentRoutes from "../server/src/routes/commentRoutes.js";
 import searchRoutes from "../server/src/routes/searchRoutes.js";
+import exploreRoutes from "../server/src/routes/exploreRoutes.js";
+import followerRoutes from "../server/src/routes/followRoutes.js";
 
 const app = express();
 app.use(express.json());
@@ -29,6 +31,8 @@ async function startServer() {
     app.use("/api/likes", likeRoutes);
     app.use("/api/comments", commentRoutes);
     app.use("/api/search", searchRoutes);
+    app.use("/api/random", exploreRoutes);
+    app.use("/api/follower", followerRoutes);
     app.listen(port, () => {
       console.log(`Server running on ${port}`);
     });

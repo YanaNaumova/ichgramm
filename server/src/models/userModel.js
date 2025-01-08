@@ -29,6 +29,8 @@ const userSchema = new mongoose.Schema({
   posts: [{ type: mongoose.Types.ObjectId, ref: "Post" }],
   postLikes: [{ type: mongoose.Types.ObjectId, ref: "Like" }],
   commentLikes: [{ type: mongoose.Types.ObjectId, ref: "Like" }],
+  followers: [{ type: mongoose.Types.ObjectId, ref: "User" }],
+  followings: [{ type: mongoose.Types.ObjectId, ref: "User" }],
 });
 
 const User = mongoose.model("User", userSchema);

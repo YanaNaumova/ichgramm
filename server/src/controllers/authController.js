@@ -11,6 +11,8 @@ export async function register(req, res) {
         .status(400)
         .json({ message: "The user with this email already exists" });
     }
+    //если имя существет сообщать об этом
+    // добавить user_name
     if (!name || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }

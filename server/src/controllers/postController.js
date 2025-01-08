@@ -79,7 +79,7 @@ export async function deletePost(req, res) {
     if (!user) {
       return res
         .status(404)
-        .json({ message: `User with id ${id} was not found` });
+        .json({ message: `User with id ${userId} was not found` });
     }
     const postIndex = user.posts.findIndex(
       (post) => post._id.toString() === postId

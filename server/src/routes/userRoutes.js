@@ -10,5 +10,6 @@ const router = Router();
 
 router.get("/profile/:id", authMiddleware, getProfile);
 router.put("/profile/:id", authMiddleware, uploadProfileImage, updateProfile);
+//добавить добавление автара для пользователя
 
 export default router;

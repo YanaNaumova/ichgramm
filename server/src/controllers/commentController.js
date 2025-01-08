@@ -77,6 +77,57 @@ export async function deleteComment(req, res) {
   }
 }
 
+export async function updateComment(req, res) {
+  try {
+    const userId = req.user.id;
+    const { postId, commentId } = req.params;
+    const { commentText } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: `User with id ${userId} was not found` });
+    }
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res
+        .status(404)
+        .json({ message: `Post with id ${postId} was not found` });
+    }
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      return res
+        .status(404)
+        .json({ message: `comment with id ${commentId}  was not found` });
+    }
+
+    if (comment.user.toString() !== userId) {
+      return res
+        .status(400)
+        .json({ message: "The user who created the comment does not match" });
+    }
+
+    if (comment.post.toString() !== postId) {
+      return res.status(400).json({ message: "The post does not match" });
+    }
+
+    if (!commentText) {
+      return res.status(400).json({ message: "The comment was not provided" });
+    }
+    const updateComment = await Comment.findByIdAndUpdate(
+      commentId,
+      { $set: { commentText } },
+      { new: true }
+    );
+
+    res
+      .status(200)
+      .json({ message: "comment was update successfully", updateComment });
+  } catch (error) {
+    res.status(500).json({ message: "Server internal error", error: error });
+  }
+}
+
 export async function allCommentsByPost(req, res) {
   try {
     const { postId } = req.params;

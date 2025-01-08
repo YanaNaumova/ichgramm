@@ -16,6 +16,7 @@ export async function getProfile(req, res) {
         message: `User with ID ${id} does not exist`,
       });
     }
+
     res.status(200).json({ message: "User was found", user: user });
   } catch (error) {
     res.status(500).json({ message: "Server internal error", error: error });
@@ -26,11 +27,19 @@ export async function updateProfile(req, res) {
   try {
     const { name, biography } = req.body;
     const { id } = req.params;
+    const userId = req.user.id;
+    console.log(id, userId);
     const user = await User.findById(id).select("-password");
     if (!user) {
       return res
         .status(404)
         .json({ message: `User with ID ${id} does not exist` });
+    }
+
+    if (user._id.toString() !== userId) {
+      return res
+        .status(400)
+        .json({ message: "The user does not have access to this profile" });
     }
     if (name && name !== user.name) {
       user.name = name;

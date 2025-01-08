@@ -68,4 +68,45 @@ export async function updateProfile(req, res) {
   }
 }
 
+export async function addPhoto(req, res) {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const user = await User.findById(id).select("-password");
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: `User with ID ${id} does not exist` });
+    }
+
+    if (user._id.toString() !== userId) {
+      return res
+        .status(400)
+        .json({ message: "The user does not have access to this profile" });
+    }
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ message: "No photo was uploaded. Please attach a file." });
+    }
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+
+    if (!allowedTypes.includes(req.file.mimetype)) {
+      return res.status(400).json({
+        message: "Invalid file type. Only JPEG, PNG, and GIF are allowed.",
+      });
+    }
+    const base64Image = req.file.buffer.toString("base64");
+    const base64EncodedImage = `data:${req.file.mimetype};base64,${base64Image}`;
+    user.avatar = base64EncodedImage;
+
+    await user.save();
+    res.status(200).json({ message: "user Photo was added", user: user });
+  } catch (error) {
+    return res.status(500).json({ message: "Server internal error", error });
+  }
+}
+
 export const uploadProfileImage = upload.single("avatar");

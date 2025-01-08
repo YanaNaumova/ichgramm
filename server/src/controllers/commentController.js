@@ -76,3 +76,24 @@ export async function deleteComment(req, res) {
     res.status(500).json({ message: "Server internal error", error: error });
   }
 }
+
+export async function allCommentsByPost(req, res) {
+  try {
+    const { postId } = req.params;
+    const post = await Post.findById(postId).populate("comments");
+    if (!post) {
+      return res
+        .status(400)
+        .json({ message: `post with id ${postId} was not found` });
+    }
+    if (post.comments === 0) {
+      return res.status(400).json({ message: "comments was not found" });
+    }
+    res.status(200).json({
+      comments: post.comments,
+      message: `was found ${post.comments.length} comment`,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server internal error" });
+  }
+}

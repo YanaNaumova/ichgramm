@@ -4,18 +4,18 @@ import jwt from "jsonwebtoken";
 
 export async function register(req, res) {
   try {
-    const { name, email, password } = req.body;
-    const candidate = await User.findOne({ email });
-    if (candidate) {
-      return res
-        .status(400)
-        .json({ message: "The user with this email already exists" });
-    }
-    //если имя существет сообщать об этом
-    // добавить user_name
-    if (!name || !email || !password) {
+    const { username, email, password, full_name } = req.body;
+
+    if (!username || !email || !password || !full_name) {
       return res.status(400).json({ message: "All fields are required" });
     }
+    const candidate = await User.findOne({ $or: [{ email }, { username }] });
+    if (candidate) {
+      return res.status(400).json({
+        message: "The user with this email or username  already exists",
+      });
+    }
+
     if (password.length <= 6) {
       return res
         .status(400)
@@ -23,13 +23,14 @@ export async function register(req, res) {
     }
     const heshedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
-      name,
+      username,
       email,
       password: heshedPassword,
+      full_name,
     });
     res.status(201).json({
       message: "User was created",
-      user: { name: user.name, email: user.email },
+      user: { username: user.username, email: user.email },
     });
   } catch (error) {
     res.status(500).json({ message: "Server internal error", error: error });
@@ -52,14 +53,14 @@ export async function login(req, res) {
     }
 
     const token = jwt.sign(
-      { email: user.email, name: user.name, id: user._id },
+      { email: user.email, username: user.username, id: user._id },
       process.env.SECRET_KEY,
       { expiresIn: "1h" }
     );
     res.status(200).json({
       message: "User was found",
       user: {
-        name: user.name,
+        username: user.username,
         email: user.email,
       },
       token: token,

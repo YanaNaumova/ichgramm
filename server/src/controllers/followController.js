@@ -128,7 +128,7 @@ export async function getFollowings(req, res) {
       return res.status(404).json({ message: "user was not found" });
     }
     const following = await Follower.find({ follower: userId })
-      .populate("following", "name email")
+      .populate("following", "username email")
       .exec();
     if (!following || following.length === 0) {
       return res.status(404).json({ message: "following was not found" });
@@ -148,7 +148,7 @@ export async function getFollowers(req, res) {
       return res.status(404).json({ message: "user was not found" });
     }
     const followers = await Follower.find({ following: userId })
-      .populate("follower", "name email")
+      .populate("follower", "username email")
       .exec();
     if (!followers || followers.length === 0) {
       return res.status(404).json({ message: "followers was not found" });

@@ -26,10 +26,10 @@ export async function getProfile(req, res) {
 
 export async function updateProfile(req, res) {
   try {
-    const { name, biography } = req.body;
+    const { username, biography, full_name } = req.body;
     const { id } = req.params;
     const userId = req.user.id;
-    console.log(id, userId);
+
     const user = await User.findById(id).select("-password");
     if (!user) {
       return res
@@ -42,11 +42,15 @@ export async function updateProfile(req, res) {
         .status(400)
         .json({ message: "The user does not have access to this profile" });
     }
-    if (name && name !== user.name) {
-      user.name = name;
+    if (username && username !== user.username) {
+      user.username = username;
     }
     if (biography && biography !== user.biography) {
       user.biography = biography;
+    }
+
+    if (full_name && full_name !== user.full_name) {
+      user.full_name = full_name;
     }
 
     if (req.file) {

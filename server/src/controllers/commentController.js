@@ -128,7 +128,7 @@ export async function updateComment(req, res) {
   }
 }
 
-export async function allCommentsByPost(req, res) {
+export async function getAllCommentsByPost(req, res) {
   try {
     const { postId } = req.params;
     const post = await Post.findById(postId).populate("comments");

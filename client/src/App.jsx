@@ -1,13 +1,20 @@
 import "./App.css";
-import Register from "./components/register";
-import Login from "./components/login";
+import LoginPage from "./pages/loginPage";
+import RegisterPage from "./pages/registerPage";
+import ProfilePage from "./pages/profilePage";
+import { Routes, Route } from "react-router-dom";
+import FogotPasswordPage from "./pages/fogotPasswordPage";
 
 function App() {
   return (
-    <>
-      <Register />
-      <Login />
-    </>
+    <div className="App">
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/home" element={<ProfilePage />} />
+        <Route path="/fogotPassword" element={<FogotPasswordPage />} />
+      </Routes>
+    </div>
   );
 }
 

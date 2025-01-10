@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authApiClient from "../../api/authApliClient";
+import apiClient from "../../api/apiClient";
 
 const initialState = {
   user: null,
@@ -24,7 +25,7 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await authApiClient.post("/auth/login", credentials);
+      const response = await apiClient.post("/auth/login", credentials);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

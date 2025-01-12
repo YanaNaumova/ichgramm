@@ -1,29 +1,30 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../redux/slices/authSlice.js";
 import styles from "./styles.module.css";
 import { Link } from "react-router-dom";
 import Logo from "../../assets/icons/logo.svg";
+import { useForm } from "react-hook-form";
+import {
+  passwordValidate,
+  validateEmail,
+  validateUsername,
+  validateFullName,
+} from "../../utils/validations.js";
 
 function Register() {
-  const [formData, setFormData] = useState({
-    email: "",
-    username: "",
-    full_name: "",
-    password: "",
-  });
-
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    dispatch(registerUser(data));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(registerUser(formData));
-  };
   return (
     <div className={styles.registerMainPage}>
       <div className={styles.registerContainer}>
@@ -31,47 +32,67 @@ function Register() {
         <div className={styles.singUpText}>
           Sign up to see photos and videos from your friends.
         </div>
-        <form onSubmit={handleSubmit} className={styles.registerFormContainer}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className={styles.registerFormContainer}
+        >
           <div className={styles.inputsContainer}>
             <input
               type="email"
               name="email"
-              value={formData.email}
-              onChange={handleChange}
               placeholder="Email"
-              required
-            ></input>
+              {...register("email", {
+                validate: validateEmail,
+              })}
+            />
+            {errors.email && (
+              <p className={styles.errorText}>{errors.email.message}</p>
+            )}
+
             <input
               type="text"
               name="full_name"
-              value={formData.full_name}
-              onChange={handleChange}
               placeholder="Full Name"
-              required
-            ></input>
+              {...register("full_name", {
+                validate: validateFullName,
+              })}
+            />
+            {errors.full_name && (
+              <p className={styles.errorText}>{errors.full_name.message}</p>
+            )}
+
             <input
               type="text"
               name="username"
-              value={formData.username}
-              onChange={handleChange}
               placeholder="Username"
-              required
-            ></input>
+              {...register("username", {
+                validate: validateUsername,
+              })}
+            />
+            {errors.username && (
+              <p className={styles.errorText}>{errors.username.message}</p>
+            )}
+
             <input
               type="password"
               name="password"
-              value={formData.password}
-              onChange={handleChange}
               placeholder="Password"
-              required
-            ></input>
+              {...register("password", {
+                validate: passwordValidate,
+              })}
+            />
+            {errors.password && (
+              <p className={styles.errorText}>{errors.password.message}</p>
+            )}
           </div>
+
           <div className={styles.privacyNotice}>
             <p>People who use our service may have uploaded</p>
             <p>
               your contact information to Instagram.<a href="#">Learn More</a>
             </p>
           </div>
+
           <div className={styles.agreementText}>
             <p>
               By signing up, you agree to our <a href="#">Terms</a>,
@@ -81,12 +102,21 @@ function Register() {
               <a href="#">Policy</a>and<a href="#">Cookies Policy</a>
             </p>
           </div>
+
           <button type="submit" disabled={loading} className={styles.singUpBtn}>
-            {loading ? "Signing..." : "Sing up"}
+            {loading ? "Signing..." : "Sign up"}
           </button>
         </form>
-        {error && <p>{error?.message}</p>}
+
+        {error && (
+          <p>
+            {error?.message ===
+              "The user with this email or username  already exists" &&
+              error?.message}
+          </p>
+        )}
       </div>
+
       <div className={styles.accauntContainer}>
         <p className={styles.haveAccountText}>
           Have an account?
@@ -98,4 +128,5 @@ function Register() {
     </div>
   );
 }
+
 export default Register;

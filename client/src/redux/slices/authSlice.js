@@ -6,9 +6,8 @@ const initialState = {
   user: null,
   token: null,
   loading: false,
-  error: false,
+  error: null,
 };
-
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData, { rejectWithValue }) => {
@@ -16,7 +15,7 @@ export const registerUser = createAsyncThunk(
       const response = await authApiClient.post("/auth/register", userData);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response.data || error.message);
     }
   }
 );
@@ -28,7 +27,7 @@ export const loginUser = createAsyncThunk(
       const response = await apiClient.post("/auth/login", credentials);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response.data || error.message);
     }
   }
 );

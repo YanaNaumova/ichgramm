@@ -6,7 +6,7 @@
   height: 100%;
   width: 100%;
   max-width: 350px;
-  max-height: 412px;
+  height: 412px;
   padding: 30.5px 40px 17px 40px;
   border-radius: 1px;
 }
@@ -122,4 +122,11 @@ input::placeholder {
 
 .fogotPasswordLink {
   color: #20507e;
+}
+
+.errorText {
+  color: #ff0014;
+  line-height: 16px;
+  font-weight: 400;
+  font-size: 12px;
 }

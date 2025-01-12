@@ -34,6 +34,7 @@ export const validateEmail = (value) => {
   if (emailPattern.test(value)) {
     return true;
   }
+  return "Email is not'valid";
 };
 
 export const validateUsername = (value) => {

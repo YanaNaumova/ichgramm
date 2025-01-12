@@ -16,7 +16,7 @@
   height: 100%;
   width: 100%;
   max-width: 350px;
-  max-height: 554px;
+  height: 554px;
   padding: 19px 40px 30px 40px;
   border-radius: 1px;
 }
@@ -132,4 +132,11 @@ input::placeholder {
   flex-direction: column;
   gap: 7px;
   width: 100%;
+}
+
+.errorText {
+  color: #ff0014;
+  line-height: 16px;
+  font-weight: 400;
+  font-size: 12px;
 }

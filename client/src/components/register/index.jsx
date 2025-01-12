@@ -10,19 +10,26 @@ import {
   validateUsername,
   validateFullName,
 } from "../../utils/validations.js";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.auth);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    mode: "onChange",
+  });
 
-  const onSubmit = (data) => {
-    dispatch(registerUser(data));
+  const onSubmit = async (data) => {
+    const result = await dispatch(registerUser(data));
+    if (registerUser.fulfilled.match(result)) {
+      navigate("/login");
+    }
   };
 
   return (
@@ -109,7 +116,7 @@ function Register() {
         </form>
 
         {error && (
-          <p>
+          <p className={styles.errorText}>
             {error?.message ===
               "The user with this email or username  already exists" &&
               error?.message}

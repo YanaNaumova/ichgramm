@@ -1,5 +1,7 @@
+import styles from "./styles.module.css";
+
 function ProfilePage() {
-  return <div>Main Page</div>;
+  return <div className={styles.profilePageContainer}>Profile page</div>;
 }
 
 export default ProfilePage;

@@ -21,6 +21,10 @@
   font-size: 12px;
 }
 
+.link:hover {
+  color: #737373;
+}
+
 .copyrightContainer {
   display: flex;
   align-items: center;

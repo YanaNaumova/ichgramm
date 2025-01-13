@@ -7,3 +7,4 @@ export async function randomPost(req, res) {
     res.status(500).json({ message: "Server internal error" });
   }
 }
+//необязательно добавить поиск постов

@@ -6,12 +6,12 @@ const upload = multer({
   storage: storage,
   limits: { fileSize: 5 * 1024 * 1024 },
 });
-// проверить поля в профайле
+
 export async function getProfile(req, res) {
   try {
     const { id } = req.params;
 
-    const user = await User.findById(id).select("-password");
+    const user = await User.findById(id).select("-password").populate("posts");
     if (!user) {
       return res.status(404).json({
         message: `User with ID ${id} does not exist`,

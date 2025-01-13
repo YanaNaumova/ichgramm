@@ -15,12 +15,6 @@ export async function register(req, res) {
         message: "The user with this email or username  already exists",
       });
     }
-
-    if (password.length <= 6) {
-      return res
-        .status(400)
-        .json({ message: "Password must be longer than 6 characters" });
-    }
     const heshedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       username,
@@ -30,20 +24,28 @@ export async function register(req, res) {
     });
     res.status(201).json({
       message: "User was created",
-      user: { username: user.username, email: user.email },
+      user: {
+        username: user.username,
+        email: user.email,
+        full_name: full_name,
+      },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server internal error", error: error });
+    res
+      .status(500)
+      .json({ message: "Server internal error", error: error.message });
   }
 }
 
 export async function login(req, res) {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { emailOrUsername, password } = req.body;
+    if (!emailOrUsername || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
-    const user = await User.findOne({ email });
+    const user = await User.findOne({
+      $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
+    });
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -62,10 +64,13 @@ export async function login(req, res) {
       user: {
         username: user.username,
         email: user.email,
+        id: user._id,
       },
       token: token,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server internal Error" });
+    res
+      .status(500)
+      .json({ message: "Server internal Error", error: error.message });
   }
 }

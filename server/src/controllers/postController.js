@@ -8,7 +8,7 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-export const uploadPostImages = upload.any();
+export const uploadPostImages = upload.single("image");
 
 export async function getUserPosts(req, res) {
   try {
@@ -44,30 +44,48 @@ export async function createPost(req, res) {
       user: id,
     });
 
-    if (!req.files || req.files.length === 0) {
+    // if (!req.files || req.files.length === 0) {
+    //   return res.status(400).json({ message: "The post photos are not added" });
+    // }
+
+    // const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    // const imageArray = [];
+    // for (const file of req.files) {
+    //   if (!allowedTypes.includes(file.mimetype)) {
+    //     return res.status(400).json({
+    //       message: "Invalid file type. Only JPEG, PNG, and GIF are allowed.",
+    //     });
+    //   }
+    //   const base64Image = file.buffer.toString("base64");
+    //   const base64EncodedImage = `data:${file.mimetype};base64,${base64Image}`;
+    //   imageArray.push(base64EncodedImage);
+    // }
+    // newPost.images = imageArray;
+    if (!req.file) {
       return res.status(400).json({ message: "The post photos are not added" });
     }
 
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    const imageArray = [];
-    for (const file of req.files) {
-      if (!allowedTypes.includes(file.mimetype)) {
+    if (req.file) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+
+      if (!allowedTypes.includes(req.file.mimetype)) {
         return res.status(400).json({
           message: "Invalid file type. Only JPEG, PNG, and GIF are allowed.",
         });
       }
-      const base64Image = file.buffer.toString("base64");
-      const base64EncodedImage = `data:${file.mimetype};base64,${base64Image}`;
-      imageArray.push(base64EncodedImage);
+      const base64Image = req.file.buffer.toString("base64");
+      const base64EncodedImage = `data:${req.file.mimetype};base64,${base64Image}`;
+      newPost.image = base64EncodedImage;
     }
-    newPost.images = imageArray;
 
     await newPost.save();
     user.posts.push(newPost._id);
     await user.save();
     res.status(201).json({ message: "New post was created", newPost: newPost });
   } catch (error) {
-    res.status(500).json({ message: "Server internal error", error: error });
+    res
+      .status(500)
+      .json({ message: "Server internal error", error: error.message });
   }
 }
 
@@ -140,27 +158,46 @@ export async function updatePost(req, res) {
       post.description = description;
     }
 
-    if (req.files && req.files.length > 0) {
-      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-      const imageArray = [];
-      for (const file of req.files) {
-        if (!allowedTypes.includes(file.mimetype)) {
-          return res.status(400).json({
-            message: "Invalid file type. Only JPEG, PNG, and GIF are allowed.",
-          });
-        }
-        const base64Image = file.buffer.toString("base64");
-        const base64EncodedImage = `data:${file.mimetype};base64,${base64Image}`;
-        imageArray.push(base64EncodedImage);
-      }
-      post.images = imageArray;
+    // if (req.files && req.files.length > 0) {
+    //   const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    //   const imageArray = [];
+    //   for (const file of req.files) {
+    //     if (!allowedTypes.includes(file.mimetype)) {
+    //       return res.status(400).json({
+    //         message: "Invalid file type. Only JPEG, PNG, and GIF are allowed.",
+    //       });
+    //     }
+    //     const base64Image = file.buffer.toString("base64");
+    //     const base64EncodedImage = `data:${file.mimetype};base64,${base64Image}`;
+    //     imageArray.push(base64EncodedImage);
+    //   }
+    //   post.images = imageArray;
+    // }
+    if (!req.file) {
+      return res.status(400).json({ message: "The post photos are not added" });
     }
+
+    if (req.file) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+
+      if (!allowedTypes.includes(req.file.mimetype)) {
+        return res.status(400).json({
+          message: "Invalid file type. Only JPEG, PNG, and GIF are allowed.",
+        });
+      }
+      const base64Image = req.file.buffer.toString("base64");
+      const base64EncodedImage = `data:${req.file.mimetype};base64,${base64Image}`;
+      post.image = base64EncodedImage;
+    }
+
     await post.save();
     res
       .status(200)
       .json({ message: `Post with id ${postId} was updated`, post });
   } catch (error) {
-    res.status(500).json({ message: "Server internaal error" });
+    res
+      .status(500)
+      .json({ message: "Server internaal error", error: error.message });
   }
 }
 export async function getAllPosts(req, res) {

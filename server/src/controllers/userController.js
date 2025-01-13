@@ -26,7 +26,7 @@ export async function getProfile(req, res) {
 
 export async function updateProfile(req, res) {
   try {
-    const { username, biography, full_name } = req.body;
+    const { username, biography, webSite, full_name } = req.body;
     const { id } = req.params;
     const userId = req.user.id;
 
@@ -51,6 +51,10 @@ export async function updateProfile(req, res) {
 
     if (full_name && full_name !== user.full_name) {
       user.full_name = full_name;
+    }
+
+    if (webSite && webSite != user.webSite) {
+      user.webSite = webSite;
     }
 
     if (req.file) {

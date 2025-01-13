@@ -11,8 +11,10 @@ import MessagePage from "./pages/messagePage";
 import ExplorePage from "./pages/explorePage";
 import CreatePage from "./pages/createPage";
 import HomePage from "./pages/homePage";
+import store from "./redux/store";
 
 function App() {
+  console.log("Текущее состояние стора:", store.getState());
   return (
     <div className="App">
       <Routes>

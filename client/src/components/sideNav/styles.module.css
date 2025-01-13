@@ -5,9 +5,6 @@
 }
 
 .spanText {
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 20px;
   color: #000000;
 }
 
@@ -29,10 +26,22 @@
 .link {
   display: flex;
   align-items: center;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #000000;
 }
-.link:active {
-  font-weight: 600;
+
+.activeLink {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 20px;
+  color: #000000;
 }
-.link:last-child {
+
+.link:last-child,
+.activeLink:last-child {
   margin-top: 23px;
 }

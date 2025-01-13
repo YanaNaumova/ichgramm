@@ -12,7 +12,7 @@ function Profile() {
     console.log(state.user, "state");
     return state.user;
   });
-  console.log(user?.username, "user");
+  console.log(user?.posts, "user");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -25,6 +25,10 @@ function Profile() {
     dispatch(logout());
     navigate("/login");
   };
+
+  const handleEditProfie = () => {
+    navigate("/profile/edit");
+  };
   // console.log(user, "user");
   console.log(loading, "loading");
   console.log(error, "error");
@@ -36,7 +40,12 @@ function Profile() {
         <div className={styles.userProfileInfoContainer}>
           <div className={styles.btnContainer}>
             <div className={styles.userName}>{user?.username}</div>
-            <button className={styles.editProfileBtn}>Edit profile</button>
+            <button
+              className={styles.editProfileBtn}
+              onClick={handleEditProfie}
+            >
+              Edit profile
+            </button>
             <button className={styles.logoutBtn} onClick={handleLogout}>
               Logout
             </button>
@@ -58,7 +67,20 @@ function Profile() {
           </div>
         </div>
       </div>
-      <div className={styles.userProfilePosts}></div>
+      <div className={styles.userProfilePostsContainer}>
+        {user?.posts?.length > 0 ? (
+          user.posts.map((post, index) => (
+            <img
+              key={index}
+              src={post?.image}
+              alt="posts"
+              className={styles.postImage}
+            />
+          ))
+        ) : (
+          <p>No posts available</p>
+        )}
+      </div>
     </div>
   );
 }

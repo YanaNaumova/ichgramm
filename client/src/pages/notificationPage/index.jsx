@@ -1,4 +1,11 @@
+import Footer from "../../components/footer";
+
 function NotificationPage() {
-  return <>Notification Page</>;
+  return (
+    <>
+      <div>Notification Page</div>
+      <Footer />
+    </>
+  );
 }
 export default NotificationPage;

@@ -1,5 +1,11 @@
+import Footer from "../../components/footer";
 function ExpolePage() {
-  return <>Explore page</>;
+  return (
+    <>
+      <div>Explore page</div>
+      <Footer />
+    </>
+  );
 }
 
 export default ExpolePage;

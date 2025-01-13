@@ -12,6 +12,7 @@ import ExplorePage from "./pages/explorePage";
 import CreatePage from "./pages/createPage";
 import HomePage from "./pages/homePage";
 import store from "./redux/store";
+import EditProfilePage from "./pages/editProfilePage";
 
 function App() {
   console.log("Текущее состояние стора:", store.getState());
@@ -38,6 +39,7 @@ function App() {
                   <Route path="/notifications" element={<NotificationPage />} />
                   <Route path="/create" element={<CreatePage />} />
                   <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/profile/edit" element={<EditProfilePage />} />
                 </Routes>
               </div>
             </div>

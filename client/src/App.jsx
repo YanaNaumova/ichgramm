@@ -9,7 +9,6 @@ import SearchPage from "./pages/searchPage";
 import NotificationPage from "./pages/notificationPage";
 import MessagePage from "./pages/messagePage";
 import ExplorePage from "./pages/explorePage";
-import CreateNewPostPage from "./pages/createNewPostPage";
 import HomePage from "./pages/homePage";
 import store from "./redux/store";
 import EditProfilePage from "./pages/editProfilePage";
@@ -38,7 +37,6 @@ function App() {
                   <Route path="/explore" element={<ExplorePage />} />
                   <Route path="/messages" element={<MessagePage />} />
                   <Route path="/notifications" element={<NotificationPage />} />
-                  <Route path="/create" element={<CreateNewPostPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/profile/edit" element={<EditProfilePage />} />
                   <Route path="*" element={<NotFoundPage />} />

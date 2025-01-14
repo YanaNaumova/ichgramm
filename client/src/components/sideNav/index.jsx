@@ -9,9 +9,19 @@ import User from "../../assets/icons/user.svg";
 import styles from "./styles.module.css";
 import Logo from "../../assets/icons/logo.svg";
 import { useState } from "react";
+import CreateNewPost from "../createNewPost";
 
 function SideNav() {
   const [activeLink, setActiveLink] = useState("/home");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  function openModal() {
+    setIsModalOpen(true);
+  }
+
+  function closeModal() {
+    setIsModalOpen(false);
+  }
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
@@ -63,8 +73,11 @@ function SideNav() {
         <span className={styles.spanText}>Notifications</span>
       </NavLink>
       <NavLink
-        to="/create"
-        onClick={() => handleLinkClick("/create")}
+        onClick={(e) => {
+          e.preventDefault();
+          openModal();
+          handleLinkClick("/create");
+        }}
         className={getClassName("/create")}
       >
         <img src={Create} alt="create" className={styles.icons} />
@@ -78,6 +91,7 @@ function SideNav() {
         <img src={User} alt="profile" className={styles.icons} />
         <span className={styles.spanText}>Profile</span>
       </NavLink>
+      {isModalOpen && <CreateNewPost closeModal={closeModal} />}
     </nav>
   );
 }

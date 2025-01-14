@@ -16,7 +16,7 @@ function Profile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log("Текущее состояние стора:", store.getState());
+  console.log("Текущее состояние стора в profile:", store.getState());
   useEffect(() => {
     dispatch(getProfile());
   }, [dispatch]);
@@ -33,10 +33,24 @@ function Profile() {
   console.log(loading, "loading");
   console.log(error, "error");
 
+  if (loading) {
+    console.log("isLoading: ", loading);
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    console.log("error: ", error);
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <div className={styles.userProfileContainer}>
       <div className={styles.userProfileInfoAndPhotoContainer}>
-        <img src={User} alt="user photo" className={styles.userPhoto} />
+        <img
+          src={user?.avatar || User}
+          alt="user photo"
+          className={styles.userPhoto}
+        />
         <div className={styles.userProfileInfoContainer}>
           <div className={styles.btnContainer}>
             <div className={styles.userName}>{user?.username}</div>
@@ -61,10 +75,10 @@ function Profile() {
               <div className={styles.followingNumber}>59</div> following
             </div>
           </div>
-          <div className={styles.profileDescription}>
-            Гарантия помощи с трудоустройством в ведущие IT-компании Выпускники
-            зарабатывают от 45к евро БЕСПЛАТНАЯ
-          </div>
+          <div className={styles.profileDescription}>{user?.biography}</div>
+          <a href="#" className={styles.website}>
+            {user?.webSite}
+          </a>
         </div>
       </div>
       <div className={styles.userProfilePostsContainer}>

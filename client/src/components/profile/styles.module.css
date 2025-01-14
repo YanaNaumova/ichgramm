@@ -13,8 +13,10 @@
 }
 
 .userPhoto {
-  width: 168px;
-  height: 168px;
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 50%;
+  width: 100%;
 }
 
 .userProfileInfoContainer {
@@ -92,4 +94,11 @@
   height: 100%;
   max-width: 307px;
   max-height: 307px;
+}
+
+.website {
+  color: #00376b;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
 }

@@ -13,6 +13,7 @@ import CreatePage from "./pages/createPage";
 import HomePage from "./pages/homePage";
 import store from "./redux/store";
 import EditProfilePage from "./pages/editProfilePage";
+import NotFoundPage from "./pages/notFoundPage";
 
 function App() {
   console.log("Текущее состояние стора:", store.getState());
@@ -40,6 +41,7 @@ function App() {
                   <Route path="/create" element={<CreatePage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/profile/edit" element={<EditProfilePage />} />
+                  <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </div>
             </div>

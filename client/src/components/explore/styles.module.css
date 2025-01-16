@@ -1,0 +1,24 @@
+.exploreContainer {
+  display: flex;
+  justify-content: center;
+  padding: 89px 113px 89px 123px;
+}
+
+.contentContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 колонки */
+  grid-gap: 4px;
+  width: 100%;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.postContainer {
+  display: flex;
+  max-width: 316px;
+  height: 316px;
+}

@@ -1,11 +1,12 @@
 import Footer from "../../components/footer";
-function ExpolePage() {
+import Explore from "../../components/explore";
+function ExplorePage() {
   return (
     <>
-      <div>Explore page</div>
+      <Explore />
       <Footer />
     </>
   );
 }
 
-export default ExpolePage;
+export default ExplorePage;

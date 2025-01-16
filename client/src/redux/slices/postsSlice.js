@@ -88,6 +88,19 @@ export const getAllPosts = createAsyncThunk("post/getAllPosts", async () => {
   return response.data;
 });
 
+export const getRandomPosts = createAsyncThunk(
+  "posts/getRandomPosts",
+  async () => {
+    try {
+      const response = await apiClient.get("/random/randomPosts");
+      console.log("Response from server getRandomPosts:", response.data);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || "Error fetching random posts";
+    }
+  }
+);
+
 const postsSlice = createSlice({
   name: "posts",
   initialState,
@@ -173,6 +186,19 @@ const postsSlice = createSlice({
         state.posts = action.payload.posts;
       })
       .addCase(getAllPosts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+    builder
+      .addCase(getRandomPosts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getRandomPosts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.posts = action.payload;
+      })
+      .addCase(getRandomPosts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -10,10 +10,12 @@ import styles from "./styles.module.css";
 import Logo from "../../assets/icons/logo.svg";
 import { useState } from "react";
 import CreateNewPost from "../createNewPost";
+import { useSelector } from "react-redux";
 
 function SideNav() {
   const [activeLink, setActiveLink] = useState("/home");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user } = useSelector((state) => state.user);
 
   function openModal() {
     setIsModalOpen(true);
@@ -88,7 +90,11 @@ function SideNav() {
         onClick={() => handleLinkClick("/profile")}
         className={getClassName("/profile")}
       >
-        <img src={User} alt="profile" className={styles.icons} />
+        <img
+          src={user?.avatar || User}
+          alt="profile"
+          className={styles.icons}
+        />
         <span className={styles.spanText}>Profile</span>
       </NavLink>
       {isModalOpen && <CreateNewPost closeModal={closeModal} />}

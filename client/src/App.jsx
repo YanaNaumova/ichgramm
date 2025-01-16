@@ -13,9 +13,16 @@ import HomePage from "./pages/homePage";
 import store from "./redux/store";
 import EditProfilePage from "./pages/editProfilePage";
 import NotFoundPage from "./pages/notFoundPage";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { getProfile } from "./redux/slices/userSlice";
 
 function App() {
   console.log("Текущее состояние стора:", store.getState());
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getProfile());
+  }, [dispatch]);
   return (
     <div className="App">
       <Routes>

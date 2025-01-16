@@ -115,7 +115,9 @@ export async function deletePost(req, res) {
     await user.save();
     res.status(200).json({ message: "Post was deleted" });
   } catch (error) {
-    res.status(500).json({ message: "Server internal error" });
+    res
+      .status(500)
+      .json({ message: "Server internal error", error: error.message });
   }
 }
 
@@ -132,7 +134,9 @@ export async function getPostById(req, res) {
       .status(200)
       .json({ message: `post with id ${postId} was found`, post: post });
   } catch (error) {
-    res.status(500).json({ message: "server internal error", error: error });
+    res
+      .status(500)
+      .json({ message: "server internal error", error: error.message });
   }
 }
 
@@ -208,6 +212,8 @@ export async function getAllPosts(req, res) {
     }
     res.status(200).json({ message: `Was found ${posts.length} post`, posts });
   } catch (error) {
-    res.status(500).json({ message: "Server internal error" });
+    res
+      .status(500)
+      .json({ message: "Server internal error", error: error.message });
   }
 }

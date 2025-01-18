@@ -4,10 +4,14 @@ import Like from "../../assets/icons/like.svg";
 import Comment from "../../assets/icons/comment.svg";
 import Smile from "../../assets/icons/smile.svg";
 import styles from "./styles.module.css";
+import { useSelector } from "react-redux";
 
 function ExplorePostModal({ post, closeModal, isOpenModal }) {
+  const { user, loading, error } = useSelector((state) => state.user);
   if (!isOpenModal) return null;
 
+  if (loading) return <div>Загрузка...</div>;
+  if (error) return <div>{error}</div>;
   return (
     <div className={styles.modalContainer} onClick={closeModal}>
       <div className={styles.postContainer}>
@@ -20,18 +24,18 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
           <div className={styles.infoContainer}>
             <div className={styles.userInfo}>
               <img
-                src={post.user?.avatar || User}
+                src={user?.avatar || User}
                 alt="user photo"
                 className={styles.userPhoto}
               />
-              <div className={styles.username}>{post.user?.username}</div>
+              <div className={styles.username}>{user?.username}</div>
             </div>
             <button className={styles.optionBtn}>...</button>
           </div>
           <div className={styles.descriptionInfoContainer}>
             <div className={styles.descriptionContainer}>
               <img
-                src={post.user?.avatar || User}
+                src={user?.avatar || User}
                 alt="user photo"
                 className={styles.userPhoto}
               />

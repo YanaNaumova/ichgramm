@@ -11,6 +11,7 @@ function Explore() {
   const { posts, loading, error } = useSelector((state) => state.posts);
   const [selectedPost, setSelectedPost] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -28,10 +29,11 @@ function Explore() {
     setIsOpenModal(true);
   };
 
-  const closedModal = () => {
+  const closeModal = () => {
     setSelectedPost(null);
     setIsOpenModal(false);
   };
+
   console.log("Текущее состояние стора в profile:", store.getState());
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -57,7 +59,7 @@ function Explore() {
         <ExpolrePostModal
           post={selectedPost}
           isOpenModal={isOpenModal}
-          closeModal={closedModal}
+          closeModal={closeModal}
         />
       )}
     </div>

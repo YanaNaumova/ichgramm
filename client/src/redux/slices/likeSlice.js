@@ -6,7 +6,7 @@ export const togglePostLike = createAsyncThunk(
   "likes/togglePostLike",
   async ({ postId }, { rejectWithValue }) => {
     try {
-      const response = await apiClient.post(`/posts/${postId}/like`);
+      const response = await apiClient.post(`/likes/like/${postId}`);
       return { postId, liked: response.data.message === "Like added to post" };
     } catch (error) {
       return rejectWithValue(
@@ -22,7 +22,7 @@ export const toggleCommentLike = createAsyncThunk(
   async ({ postId, commentId }, { rejectWithValue }) => {
     try {
       const response = await apiClient.post(
-        `/posts/${postId}/comments/${commentId}/like`
+        `/likes/like/${postId}/${commentId}`
       );
       return {
         postId,
@@ -42,7 +42,7 @@ export const getPostLikes = createAsyncThunk(
   "likes/getPostLikes",
   async (postId, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get(`/posts/${postId}/likes`);
+      const response = await apiClient.get(`/likes/likeCount/${postId}`);
       return { postId, postLikesCount: response.data.postslikeCount };
     } catch (error) {
       return rejectWithValue(
@@ -58,7 +58,7 @@ export const getCommentLikes = createAsyncThunk(
   async ({ postId, commentId }, { rejectWithValue }) => {
     try {
       const response = await apiClient.get(
-        `/posts/${postId}/comments/${commentId}/likes`
+        `/likes/likeCount/${postId}/${commentId}`
       );
       return {
         postId,

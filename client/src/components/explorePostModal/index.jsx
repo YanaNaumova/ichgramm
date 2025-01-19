@@ -9,10 +9,12 @@ import { useEffect } from "react";
 import { getAllCommentsByPost } from "../../redux/slices/commentsSlice";
 import { useState } from "react";
 import { addComment } from "../../redux/slices/commentsSlice";
+import { getPostLikes, togglePostLike } from "../../redux/slices/likeSlice";
 
 function ExplorePostModal({ post, closeModal, isOpenModal }) {
   const dispatch = useDispatch();
   const { comments, loading } = useSelector((state) => state.comments);
+  const { postLikesCount } = useSelector((state) => state.likes);
   const user = useSelector((state) => state.user.user);
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
@@ -20,6 +22,7 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
   useEffect(() => {
     if (post && isOpenModal) {
       dispatch(getAllCommentsByPost(post._id));
+      dispatch(getPostLikes(post._id));
     }
   }, [dispatch, post, isOpenModal]);
 
@@ -45,6 +48,26 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
     } catch (error) {
       console.log(error);
       setError("Error adding comment");
+    }
+  };
+
+  const handleTogglePostLike = async () => {
+    if (!user || !user._id) {
+      setError("User not found");
+      return;
+    }
+
+    try {
+      await dispatch(
+        togglePostLike({
+          postId: post._id,
+        })
+      );
+      // Обновить количество лайков после изменения
+      dispatch(getPostLikes(post._id));
+    } catch (error) {
+      console.log(error);
+      setError("Error toggling post like");
     }
   };
 
@@ -89,10 +112,15 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
           </div>
           <div className={styles.likesCountContainer}>
             <div className={styles.liksAndMessageIcons}>
-              <img src={Like} alt="like" className={styles.like} />
+              <img
+                src={Like}
+                alt="like"
+                className={styles.like}
+                onClick={handleTogglePostLike}
+              />
               <img src={Comment} alt="comment" className={styles.comment} />
             </div>
-            <div>25 likes</div>
+            <div>{postLikesCount[post._id] || 0} likes</div>
             <div className={styles.dayInfo}>1 day</div>
           </div>
 

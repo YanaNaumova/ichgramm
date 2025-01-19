@@ -7,6 +7,7 @@ export const togglePostLike = createAsyncThunk(
   async ({ postId }, { rejectWithValue }) => {
     try {
       const response = await apiClient.post(`/likes/like/${postId}`);
+
       return { postId, liked: response.data.message === "Like added to post" };
     } catch (error) {
       return rejectWithValue(
@@ -43,7 +44,11 @@ export const getPostLikes = createAsyncThunk(
   async (postId, { rejectWithValue }) => {
     try {
       const response = await apiClient.get(`/likes/likeCount/${postId}`);
-      return { postId, postLikesCount: response.data.postslikeCount };
+      return {
+        postId,
+        postLikesCount: response.data.postslikeCount,
+        userPostLikes: response.data.liked,
+      };
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Error fetching post likes"
@@ -64,6 +69,7 @@ export const getCommentLikes = createAsyncThunk(
         postId,
         commentId,
         commentsLikeCount: response.data.commentsLikeCount,
+        userCommentLikes: response.data.liked,
       };
     } catch (error) {
       return rejectWithValue(
@@ -75,7 +81,9 @@ export const getCommentLikes = createAsyncThunk(
 
 const initialState = {
   postLikesCount: {}, // Хранение количества лайков для постов
-  commentLikesCount: {}, // Хранение количества лайков для комментариев
+  commentLikesCount: {},
+  userPostLikes: {},
+  userCommentLikes: {},
   loading: false,
   error: null,
 };
@@ -104,6 +112,8 @@ const likeSlice = createSlice({
             (state.postLikesCount[postId] || 0) - 1
           );
         }
+        // Обновляем состояние лайка для пользователя
+        state.userPostLikes[postId] = liked;
       })
       .addCase(togglePostLike.rejected, (state, action) => {
         state.loading = false;
@@ -132,6 +142,9 @@ const likeSlice = createSlice({
             ),
           };
         }
+        // Обновляем состояние лайка для комментария
+        state.userCommentLikes[postId] = state.userCommentLikes[postId] || {};
+        state.userCommentLikes[postId][commentId] = liked;
       })
       .addCase(toggleCommentLike.rejected, (state, action) => {
         state.loading = false;
@@ -144,8 +157,9 @@ const likeSlice = createSlice({
       })
       .addCase(getPostLikes.fulfilled, (state, action) => {
         state.loading = false;
-        const { postId, postLikesCount } = action.payload;
+        const { postId, postLikesCount, userPostLikes } = action.payload;
         state.postLikesCount[postId] = postLikesCount;
+        state.userPostLikes[postId] = userPostLikes; // true или false
       })
       .addCase(getPostLikes.rejected, (state, action) => {
         state.loading = false;
@@ -158,11 +172,14 @@ const likeSlice = createSlice({
       })
       .addCase(getCommentLikes.fulfilled, (state, action) => {
         state.loading = false;
-        const { postId, commentId, commentsLikeCount } = action.payload;
+        const { postId, commentId, commentsLikeCount, userCommentLikes } =
+          action.payload;
         state.commentLikesCount[postId] = {
           ...(state.commentLikesCount[postId] || {}),
           [commentId]: commentsLikeCount,
         };
+        state.userCommentLikes[postId] = state.userCommentLikes[postId] || {};
+        state.userCommentLikes[postId][commentId] = userCommentLikes; // true или false
       })
       .addCase(getCommentLikes.rejected, (state, action) => {
         state.loading = false;

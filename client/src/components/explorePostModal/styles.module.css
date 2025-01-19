@@ -128,6 +128,17 @@
 .comment {
   width: 20.34px;
   height: 20.34px;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+}
+
+.like:hover {
+  transform: scale(1.1);
+}
+
+.like.liked {
+  filter: invert(31%) sepia(81%) saturate(6438%) hue-rotate(349deg)
+    brightness(96%) contrast(108%);
 }
 
 .liksAndMessageIcons {
@@ -170,7 +181,4 @@
 .commentsContainer {
   display: flex;
   align-items: center;
-}
-
-.commentText {
 }

@@ -5,9 +5,11 @@ import { useEffect } from "react";
 import store from "../../redux/store";
 import ExpolrePostModal from "../../components/explorePostModal";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Explore() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { posts, loading, error } = useSelector((state) => state.posts);
   const [selectedPost, setSelectedPost] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -27,11 +29,13 @@ function Explore() {
   const handleImageClick = (post) => {
     setSelectedPost(post);
     setIsOpenModal(true);
+    navigate(`post/${post._id}`);
   };
 
   const closeModal = () => {
     setSelectedPost(null);
     setIsOpenModal(false);
+    navigate(-1);
   };
 
   console.log("Текущее состояние стора в profile:", store.getState());

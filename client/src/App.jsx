@@ -14,6 +14,7 @@ import store from "./redux/store";
 import EditProfilePage from "./pages/editProfilePage";
 import NotFoundPage from "./pages/notFoundPage";
 import ExplorePostModal from "./components/explorePostModal";
+// import PostsPage from "./pages/postsPage";
 // import { useDispatch } from "react-redux";
 // import { useEffect } from "react";
 // import { getProfile } from "./redux/slices/userSlice";
@@ -42,13 +43,14 @@ function App() {
                 <Routes>
                   <Route path="/home" element={<HomePage />} />
                   <Route path="/search" element={<SearchPage />} />
-                  <Route path="/explore" element={<ExplorePage />} />
-                  <Route path="/post/:postId" element={<ExplorePostModal />} />
-
+                  <Route path="/explore" element={<ExplorePage />}>
+                    <Route path="post/:postId" element={<ExplorePostModal />} />
+                  </Route>
                   <Route path="/messages" element={<MessagePage />} />
                   <Route path="/notifications" element={<NotificationPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/profile/edit" element={<EditProfilePage />} />
+                  {/* <Route path="/posts" element={<PostsPage />} /> */}
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </div>

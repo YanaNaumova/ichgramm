@@ -48,7 +48,7 @@ function CreateNewPost({ closeModal }) {
       setPostSucess(true);
       setTimeout(() => {
         closeModal();
-      }, 3000);
+      }, 1000);
       setDescription("");
       setImage(null);
       setImagePreview(null);
@@ -63,7 +63,7 @@ function CreateNewPost({ closeModal }) {
     if (message) {
       const timer = setTimeout(() => {
         setMessage("");
-      }, 3000);
+      }, 1000);
 
       return () => clearTimeout(timer);
     }

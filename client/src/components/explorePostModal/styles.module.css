@@ -152,3 +152,25 @@
 .addComment {
   display: flex;
 }
+
+.commentHeader {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.commentItem {
+  display: flex;
+  padding: 14px;
+  gap: 5px;
+  align-items: center;
+  width: 100%;
+}
+
+.commentsContainer {
+  display: flex;
+  align-items: center;
+}
+
+.commentText {
+}

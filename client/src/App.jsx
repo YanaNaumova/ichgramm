@@ -44,6 +44,7 @@ function App() {
                   <Route path="/search" element={<SearchPage />} />
                   <Route path="/explore" element={<ExplorePage />} />
                   <Route path="/post/:postId" element={<ExplorePostModal />} />
+
                   <Route path="/messages" element={<MessagePage />} />
                   <Route path="/notifications" element={<NotificationPage />} />
                   <Route path="/profile" element={<ProfilePage />} />

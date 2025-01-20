@@ -15,9 +15,9 @@ import {
   getCommentLikes,
   toggleCommentLike,
 } from "../../redux/slices/likeSlice";
-import PostDialog from "../../components/postDialog";
+import PostDialog from "../postDialog";
 
-function ExplorePostModal({ post, closeModal, isOpenModal }) {
+function PostModal({ post, closeModal, isOpenModal }) {
   console.log(post.user, "POST.USER");
   const dispatch = useDispatch();
   const { comments, loading } = useSelector((state) => state.comments);
@@ -338,7 +338,7 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
   );
 }
 
-ExplorePostModal.propTypes = {
+PostModal.propTypes = {
   post: PropTypes.shape({
     _id: PropTypes.string, // Идентификатор поста
     description: PropTypes.string, // Описание поста
@@ -355,4 +355,4 @@ ExplorePostModal.propTypes = {
   isOpenModal: PropTypes.bool, // Флаг, показывающий, открыто ли модальное окно
 };
 
-export default ExplorePostModal;
+export default PostModal;

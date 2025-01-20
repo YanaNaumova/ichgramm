@@ -1,0 +1,11 @@
+.postContainer {
+  display: flex;
+  justify-content: center;
+  padding: 89px 113px 89px 123px;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

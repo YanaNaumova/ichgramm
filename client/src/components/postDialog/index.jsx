@@ -16,6 +16,16 @@ function PostDialog({ post, onCloseDialog, isDialogOpen, closedModal }) {
     closedModal();
   }
 
+  function handleGoToPost() {
+    closedModal();
+  }
+
+  function handleCopyLink() {
+    navigator.clipboard.writeText(`${window.location.origin}/post/${post._id}`);
+    alert("Link copied to clipboard!");
+    closedModal();
+  }
+
   function openConfirmDialog() {
     setIsConfirmDialogOpen(true);
   }
@@ -36,8 +46,12 @@ function PostDialog({ post, onCloseDialog, isDialogOpen, closedModal }) {
             <button className={styles.dialogBtn}>Edit</button>
           </>
         )}
-        <button className={styles.dialogBtn}>Go to post</button>
-        <button className={styles.dialogBtn}>Copy link</button>
+        <button className={styles.dialogBtn} onClick={handleGoToPost}>
+          Go to post
+        </button>
+        <button className={styles.dialogBtn} onClick={handleCopyLink}>
+          Copy link
+        </button>
         <button className={styles.dialogBtn} onClick={onCloseDialog}>
           Cancel
         </button>

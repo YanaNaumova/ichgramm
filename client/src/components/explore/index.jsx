@@ -3,7 +3,7 @@ import { getRandomPosts } from "../../redux/slices/postsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import store from "../../redux/store";
-import ExpolrePostModal from "../../components/explorePostModal";
+import PostModal from "../postModal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -61,7 +61,7 @@ function Explore() {
         ))}
       </div>
       {selectedPost && (
-        <ExpolrePostModal
+        <PostModal
           post={selectedPost}
           isOpenModal={isOpenModal}
           closeModal={closeModal}

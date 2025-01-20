@@ -1,6 +1,8 @@
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
 import multer from "multer";
+import Comment from "../models/commentModel.js";
+import { PostLike, CommentLike } from "../models/likeModel.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -79,9 +81,15 @@ export async function createPost(req, res) {
     }
 
     await newPost.save();
+    console.log("Post saved successfully in posts collection:", newPost);
     user.posts.push(newPost._id);
     await user.save();
-    res.status(201).json({ message: "New post was created", newPost: newPost });
+
+    const populatedPost = await newPost.populate("user");
+
+    res
+      .status(201)
+      .json({ message: "New post was created", newPost: populatedPost });
   } catch (error) {
     res
       .status(500)
@@ -107,12 +115,53 @@ export async function deletePost(req, res) {
         .status(400)
         .json({ message: `post with id ${postId} was not found` });
     }
+
+    // Удаляем комментарии, связанные с постом
+    await Comment.deleteMany({ post: postId });
+
+    // Получаем все лайки, связанные с этим постом
+    const postLikes = await PostLike.find({ post: postId });
+    const commentLikes = await CommentLike.find({ post: postId });
+
+    // Получаем массив ID лайков, чтобы удалить их из модели User
+    const postLikeIds = postLikes.map((like) => like._id);
+    const commentLikeIds = commentLikes.map((like) => like._id);
+
+    // Удаляем лайки, связанные с этим постом
+    await PostLike.deleteMany({ post: postId });
+
+    // Удаляем лайки, связанные с комментариями этого поста
+    await CommentLike.deleteMany({ post: postId });
+
     const deletePost = await Post.findOneAndDelete({ _id: postId });
     if (!deletePost) {
       return res.status(400).json({ message: "Post was not delete" });
     }
     user.posts.splice(postIndex, 1);
     await user.save();
+
+    // Обновляем модель Post, чтобы удалить все комментарии из массива 'comments'
+    await Post.updateOne(
+      { _id: postId },
+      { $pull: { comments: { $in: deletePost.comments } } }
+    );
+
+    // Удаляем ссылки на лайки из модели User
+    await User.updateMany(
+      {
+        $or: [
+          { postLikes: { $in: postLikeIds } },
+          { commentLikes: { $in: commentLikeIds } },
+        ],
+      },
+      {
+        $pull: {
+          postLikes: { $in: postLikeIds },
+          commentLikes: { $in: commentLikeIds },
+        },
+      }
+    );
+
     res.status(200).json({ message: "Post was deleted" });
   } catch (error) {
     res
@@ -124,7 +173,7 @@ export async function deletePost(req, res) {
 export async function getPostById(req, res) {
   try {
     const { id: postId } = req.params;
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate("user");
     if (!post) {
       return res
         .status(404)

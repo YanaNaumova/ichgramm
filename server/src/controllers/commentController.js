@@ -22,11 +22,16 @@ export async function addComment(req, res) {
       commentText,
       user: userId,
       post: postId,
+      created_at: new Date(),
     });
     await newComment.save();
     post.comments.push(newComment._id);
     await post.save();
-    res.status(200).json({ message: "comment was created", newComment });
+    const populatedComment = await Comment.findById(newComment._id).populate(
+      "user",
+      "username avatar"
+    );
+    res.status(200).json(populatedComment);
   } catch (error) {
     res.status(500).json({ message: "Server internal error", error: error });
   }
@@ -131,19 +136,24 @@ export async function updateComment(req, res) {
 export async function getAllCommentsByPost(req, res) {
   try {
     const { postId } = req.params;
-    const post = await Post.findById(postId).populate("comments");
+    const post = await Post.findById(postId).populate({
+      path: "comments",
+      populate: {
+        path: "user",
+        select: "username avatar",
+      },
+    });
     if (!post) {
       return res
         .status(400)
         .json({ message: `post with id ${postId} was not found` });
     }
     if (post.comments === 0) {
-      return res.status(400).json({ message: "comments was not found" });
+      return res
+        .status(400)
+        .json({ message: "comments was not found", comments: [] });
     }
-    res.status(200).json({
-      comments: post.comments,
-      message: `was found ${post.comments.length} comment`,
-    });
+    res.status(200).json(post.comments);
   } catch (error) {
     res.status(500).json({ message: "Server internal error" });
   }

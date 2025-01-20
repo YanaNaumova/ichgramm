@@ -109,6 +109,7 @@ export async function addCommentLike(req, res) {
 export async function getPostlikes(req, res) {
   try {
     const { postId } = req.params;
+    const userId = req.user.id;
     const post = await Post.findById(postId);
     if (!post) {
       return res
@@ -116,14 +117,19 @@ export async function getPostlikes(req, res) {
         .json({ message: `post with id ${postId} was not found` });
     }
     const postslikeCount = await PostLike.countDocuments({ post: postId });
+    const userLike = await PostLike.findOne({ post: postId, user: userId });
     if (postslikeCount === 0) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: `No likes found for the post with id ${postId}`,
+        postslikeCount: 0, // или другое значение по умолчанию
+        liked: false,
       });
     }
+
     res.status(200).json({
       message: `was found ${postslikeCount} like for Post with id ${postId}`,
       postslikeCount,
+      liked: userLike ? true : false,
     });
   } catch (error) {
     res.status(500).json({ message: "Server internal error", error: error });
@@ -133,6 +139,11 @@ export async function getPostlikes(req, res) {
 export async function getCommentLikes(req, res) {
   try {
     const { postId, commentId } = req.params;
+    if (!postId || !commentId) {
+      return res.status(400).json({
+        message: "Both postId and commentId are required",
+      });
+    }
     const userId = req.user.id;
     const user = await User.findById(userId);
 
@@ -146,15 +157,25 @@ export async function getCommentLikes(req, res) {
         .status(400)
         .json({ message: `post with id ${postId} was not found` });
     }
-    const commentsLikeCount = await CommentLike.countDocuments({
-      comment: commentId,
+    const comment = await Comment.findOne({
+      _id: commentId,
+      post: postId,
     });
-    const comment = await Comment.findById(commentId);
     if (!comment) {
       return res
         .status(400)
         .json({ message: `comment with id ${commentId} was not found` });
     }
+
+    const commentsLikeCount = await CommentLike.countDocuments({
+      post: postId,
+      comment: commentId,
+    });
+    const userCommentLike = await CommentLike.findOne({
+      post: postId,
+      comment: commentId,
+      user: userId,
+    });
 
     if (comment.post.toString() !== postId) {
       return res.status(400).json({
@@ -163,15 +184,19 @@ export async function getCommentLikes(req, res) {
     }
 
     if (commentsLikeCount === 0) {
-      return res.status(400).json({
-        message: `No likes found for the comment with id ${commentId}`,
+      return res.status(200).json({
+        message: `No likes found for the comment with id ${postId}`,
+        commentsLikeCount: 0, // или другое значение по умолчанию
+        liked: false,
       });
     }
     res.status(200).json({
       message: `was found ${commentsLikeCount} like for comment with id ${commentId}`,
       commentsLikeCount,
+      liked: userCommentLike ? true : false,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Server internal error", error: error });
   }
 }

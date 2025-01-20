@@ -61,10 +61,13 @@ export const getPostLikes = createAsyncThunk(
 export const getCommentLikes = createAsyncThunk(
   "likes/getCommentLikes",
   async ({ postId, commentId }, { rejectWithValue }) => {
+    console.log("Received postId:", postId); // Логирование postId
+    console.log("Received commentId:", commentId); // Логирование commentId
     try {
       const response = await apiClient.get(
         `/likes/likeCount/${postId}/${commentId}`
       );
+      console.log(response.data, "response.data");
       return {
         postId,
         commentId,
@@ -72,6 +75,7 @@ export const getCommentLikes = createAsyncThunk(
         userCommentLikes: response.data.liked,
       };
     } catch (error) {
+      console.log(error);
       return rejectWithValue(
         error.response?.data || "Error fetching comment likes"
       );

@@ -9,20 +9,25 @@ import { useEffect } from "react";
 import { getAllCommentsByPost } from "../../redux/slices/commentsSlice";
 import { useState } from "react";
 import { addComment } from "../../redux/slices/commentsSlice";
-import { getPostLikes, togglePostLike } from "../../redux/slices/likeSlice";
+import {
+  getPostLikes,
+  togglePostLike,
+  getCommentLikes,
+  toggleCommentLike,
+} from "../../redux/slices/likeSlice";
 
 function ExplorePostModal({ post, closeModal, isOpenModal }) {
-  console.log(post, "POST");
   const dispatch = useDispatch();
   const { comments, loading } = useSelector((state) => state.comments);
-  const { postLikesCount, userPostLikes } = useSelector((state) => state.likes);
-  console.log(userPostLikes, "userPostLikes");
-
-  // const user = useSelector((state) => state.user.user);
+  const { postLikesCount, userPostLikes, commentLikesCount, userCommentLikes } =
+    useSelector((state) => state.likes);
+  console.log(userCommentLikes, "userCommentLikes");
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
-  const [isLiked, setIsLiked] = useState(userPostLikes || false);
-  console.log(isLiked, "isLiked");
+  const [isLiked, setIsLiked] = useState(userPostLikes?.[post?._id] || false);
+  const [likedComments, setLikedComments] = useState(userCommentLikes);
+  console.log(likedComments, "likedComments");
+
   useEffect(() => {
     if (post && isOpenModal) {
       dispatch(getAllCommentsByPost(post._id));
@@ -31,10 +36,42 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
   }, [dispatch, post, isOpenModal]);
 
   useEffect(() => {
-    if (userPostLikes !== undefined) {
-      setIsLiked(userPostLikes); // Обновляем состояние лайка только после того, как данные о лайке были загружены
+    if (comments && comments.length > 0) {
+      // Фильтруем только те комментарии, которые относятся к текущему посту
+      comments
+        .filter((comment) => comment.post === post._id) // Убедитесь, что comment.post === post._id
+        .forEach((comment) => {
+          dispatch(
+            getCommentLikes({ postId: post._id, commentId: comment._id })
+          );
+        });
     }
-  }, [userPostLikes]);
+  }, [dispatch, comments, post]);
+
+  useEffect(() => {
+    if (userPostLikes && post?._id) {
+      setIsLiked(userPostLikes[post._id] || false); // Устанавливаем лайк для текущего поста
+    }
+  }, [userPostLikes, post]);
+
+  useEffect(() => {
+    // Обновление likedComments при изменении userCommentLikes
+    if (comments && userCommentLikes) {
+      setLikedComments((prevState) => {
+        const updatedState = { ...prevState };
+        comments
+          .filter((comment) => comment.post === post._id) // Только для комментариев этого поста
+          .forEach((comment) => {
+            // Обновляем состояние likedComments для текущего комментария
+            updatedState[post._id] = {
+              ...updatedState[post._id], // сохраняем предыдущие лайки для этого поста
+              [comment._id]: userCommentLikes[post._id]?.[comment._id] || false, // ставим значение лайка для текущего комментария
+            };
+          });
+        return updatedState;
+      });
+    }
+  }, [userCommentLikes, comments, post]);
 
   if (!isOpenModal) return null;
 
@@ -75,18 +112,47 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
       ).unwrap();
 
       // Обновляем состояние лайка только на основании количества лайков
-      console.log(response.liked, "response.liked");
-      if (response.liked) {
-        setIsLiked(true);
-      } else {
-        setIsLiked(false);
-      }
+
+      setIsLiked(response.liked);
 
       // Обновить количество лайков
       dispatch(getPostLikes(post._id));
     } catch (error) {
       console.log(error);
       setError("Error toggling post like");
+    }
+  };
+
+  const handleToggleCommentLike = async (commentId) => {
+    if (!post._id || !commentId) {
+      setError("Invalid post or comment ID");
+      return;
+    }
+    try {
+      const response = await dispatch(
+        toggleCommentLike({
+          postId: post._id,
+          commentId,
+        })
+      ).unwrap();
+
+      setLikedComments((prevState) => ({
+        ...prevState,
+        [post._id]: {
+          ...prevState[post._id], // сохраняем предыдущие лайки для других комментариев этого поста
+          [commentId]: response.liked, // обновляем лайк для текущего комментария
+        },
+      }));
+
+      dispatch(
+        getCommentLikes({
+          postId: post._id,
+          commentId,
+        })
+      );
+    } catch (error) {
+      console.log(error);
+      setError("Error toggling comment like");
     }
   };
 
@@ -131,13 +197,10 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
           </div>
           <div className={styles.likesCountContainer}>
             <div className={styles.liksAndMessageIcons}>
-              {console.log(isLiked, "ISLIKED")}
               <img
                 src={Like}
                 alt="like"
-                className={`${styles.like} ${
-                  isLiked ? styles.liked : styles.like
-                }`}
+                className={`${styles.like} ${isLiked ? styles.liked : ""}`}
                 onClick={handleTogglePostLike}
               />
               <img src={Comment} alt="comment" className={styles.comment} />
@@ -174,6 +237,23 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
                     <div className={styles.commentText}>
                       {comment?.commentText}
                     </div>
+                    {console.log(
+                      likedComments[post._id]?.[comment._id],
+                      "likedComments[post._id]?.[comment._id]"
+                    )}
+                    <img
+                      src={Like}
+                      alt="like"
+                      className={`${styles.smallLike} ${
+                        likedComments[post._id]?.[comment._id]
+                          ? styles.smallLiked
+                          : ""
+                      }`}
+                      onClick={() => handleToggleCommentLike(comment._id)}
+                    />
+                    <span className={styles.commentLikesCount}>
+                      {commentLikesCount?.[post._id]?.[comment._id] || 0} likes
+                    </span>
                   </div>
                 ))}
               </div>

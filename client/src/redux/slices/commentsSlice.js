@@ -3,7 +3,13 @@ import apiClient from "../../api/apiClient";
 
 export const getAllCommentsByPost = createAsyncThunk(
   "/comments/getComments",
-  async (postId, { rejectWithValue }) => {
+  async (postId, { getState, rejectWithValue }) => {
+    const postExists = getState().posts.posts.some(
+      (post) => post._id === postId
+    );
+    if (!postExists) {
+      return rejectWithValue("Post was deleted, comments not found");
+    }
     try {
       const response = await apiClient.get(`/comments/comments/${postId}`);
       return response.data;

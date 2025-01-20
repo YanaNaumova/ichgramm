@@ -25,22 +25,30 @@
   width: 100%;
   max-width: 577px;
   height: 100%;
+  max-height: 722px;
 }
 
 .postImgContainer {
   width: 100%;
   max-width: 577px;
+  max-height: 722px;
 }
 
 .image {
   width: 100%;
   height: 100%;
+  max-width: 577px;
+  max-height: 722px;
 }
 
 .rightContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 100%;
   max-width: 423px;
   height: 100%;
+  max-height: 722px;
   background-color: #f5f5f5;
 }
 
@@ -97,13 +105,19 @@
   color: #000000;
   font-size: 12px;
   padding-left: 5px;
+  text-align: start;
 }
 
-.dayInfo {
+.dayInfo,
+.dayInfoLike,
+.commentLikesCount {
   color: #737373;
   font-weight: 400;
   font-size: 10.17px;
   line-height: 13.6px;
+}
+
+.dayInfoLike {
   padding-left: 45px;
 }
 
@@ -156,16 +170,19 @@
 
 .liksAndMessageIcons {
   display: flex;
-  padding: 14px;
   gap: 14px;
+  padding-bottom: 14px;
 }
 .likesCountContainer {
   display: flex;
   flex-direction: column;
   border: 2px solid #efefef;
+  padding: 14px;
 }
 
 .sendBtn {
+  background: transparent;
+  cursor: pointer;
   border: none;
   color: #0095f6;
   font-size: 12px;
@@ -174,7 +191,21 @@
 }
 
 .addComment {
+  max-height: 45px;
+  padding: 14px;
   display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.commentInput {
+  flex: 1;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 14px;
+  outline: none;
+  background: transparent;
 }
 
 .commentHeader {
@@ -185,13 +216,52 @@
 
 .commentItem {
   display: flex;
-  padding: 14px;
+  padding-left: 14px;
+  padding-right: 14px;
   gap: 5px;
   align-items: center;
+  width: 100%;
+}
+
+.commentItemContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   width: 100%;
 }
 
 .commentsContainer {
   display: flex;
   align-items: center;
+}
+
+.commentText {
+  color: #000000;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 15px;
+}
+
+.commentTextContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.comments {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.likeAndTimeContainer {
+  display: flex;
+  gap: 20px;
+}
+
+.postCount {
+  color: #000000;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 15px;
 }

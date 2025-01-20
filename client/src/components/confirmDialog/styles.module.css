@@ -1,0 +1,52 @@
+.modalContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 3;
+}
+
+.modalContent {
+  display: flex;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 250px;
+  width: 100%;
+  flex-direction: column;
+  padding: 20px;
+  font-weight: 400;
+  font-size: 14px;
+}
+.dialogBtns {
+  display: flex;
+  width: 100%;
+  margin-top: 15px;
+  gap: 20px;
+  justify-content: center;
+}
+
+.dialogBtn {
+  padding: 5px 15px;
+  border: 1px solid #dbdbdb;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.dialogBtn:hover {
+  background-color: #efefef;
+}
+
+.dialogBtn:first-child {
+  background-color: #0095f6;
+  color: #fff;
+}
+.dialogBtn:first-child:hover {
+  background-color: #1993e4;
+}

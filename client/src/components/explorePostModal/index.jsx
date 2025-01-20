@@ -15,10 +15,13 @@ import {
   getCommentLikes,
   toggleCommentLike,
 } from "../../redux/slices/likeSlice";
+import PostDialog from "../../components/postDialog";
 
 function ExplorePostModal({ post, closeModal, isOpenModal }) {
+  console.log(post.user, "POST.USER");
   const dispatch = useDispatch();
   const { comments, loading } = useSelector((state) => state.comments);
+  console.log(comments, "COMMENTS");
   const { postLikesCount, userPostLikes, commentLikesCount, userCommentLikes } =
     useSelector((state) => state.likes);
   console.log(userCommentLikes, "userCommentLikes");
@@ -26,12 +29,40 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
   const [error, setError] = useState(null);
   const [isLiked, setIsLiked] = useState(userPostLikes?.[post?._id] || false);
   const [likedComments, setLikedComments] = useState(userCommentLikes);
-  console.log(likedComments, "likedComments");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  function openDialog() {
+    setIsDialogOpen(true);
+  }
+
+  function closeDialog() {
+    setIsDialogOpen(false);
+  }
+
+  function timeAgo(postDate) {
+    const postDateObj = new Date(postDate); // Convert the string to a Date object
+    const currentDate = new Date(); // Get the current date
+    const diffInMilliseconds = currentDate - postDateObj; // Difference in milliseconds
+
+    const diffInMinutes = Math.floor(diffInMilliseconds / (1000 * 60)); // Difference in minutes
+    const diffInHours = Math.floor(diffInMinutes / 60); // Difference in hours
+    const diffInDays = Math.floor(diffInHours / 24); // Difference in days
+
+    if (diffInDays > 0) {
+      return `${diffInDays} day${diffInDays > 1 ? "s" : ""}`; // "1 day" or "2 days"
+    } else if (diffInHours > 0) {
+      return `${diffInHours} h.`; // "3 h." or "12 h."
+    } else if (diffInMinutes > 0) {
+      return `${diffInMinutes} min.`; // "45 min." or "1 min."
+    } else {
+      return "just now"; // If the difference is less than a minute
+    }
+  }
 
   useEffect(() => {
     if (post && isOpenModal) {
-      dispatch(getAllCommentsByPost(post._id));
-      dispatch(getPostLikes(post._id));
+      dispatch(getAllCommentsByPost(post?._id));
+      dispatch(getPostLikes(post?._id));
     }
   }, [dispatch, post, isOpenModal]);
 
@@ -39,10 +70,10 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
     if (comments && comments.length > 0) {
       // Фильтруем только те комментарии, которые относятся к текущему посту
       comments
-        .filter((comment) => comment.post === post._id) // Убедитесь, что comment.post === post._id
+        .filter((comment) => comment?.post === post?._id) // Убедитесь, что comment.post === post._id
         .forEach((comment) => {
           dispatch(
-            getCommentLikes({ postId: post._id, commentId: comment._id })
+            getCommentLikes({ postId: post?._id, commentId: comment?._id })
           );
         });
     }
@@ -50,7 +81,7 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
 
   useEffect(() => {
     if (userPostLikes && post?._id) {
-      setIsLiked(userPostLikes[post._id] || false); // Устанавливаем лайк для текущего поста
+      setIsLiked(userPostLikes[post?._id] || false); // Устанавливаем лайк для текущего поста
     }
   }, [userPostLikes, post]);
 
@@ -60,12 +91,13 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
       setLikedComments((prevState) => {
         const updatedState = { ...prevState };
         comments
-          .filter((comment) => comment.post === post._id) // Только для комментариев этого поста
+          .filter((comment) => comment?.post === post?._id) // Только для комментариев этого поста
           .forEach((comment) => {
             // Обновляем состояние likedComments для текущего комментария
-            updatedState[post._id] = {
-              ...updatedState[post._id], // сохраняем предыдущие лайки для этого поста
-              [comment._id]: userCommentLikes[post._id]?.[comment._id] || false, // ставим значение лайка для текущего комментария
+            updatedState[post?._id] = {
+              ...updatedState[post?._id], // сохраняем предыдущие лайки для этого поста
+              [comment?._id]:
+                userCommentLikes[post?._id]?.[comment?._id] || false, // ставим значение лайка для текущего комментария
             };
           });
         return updatedState;
@@ -76,7 +108,7 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
   if (!isOpenModal) return null;
 
   const handleAddComment = async () => {
-    if (!post.user || !post.user._id) {
+    if (!post?.user || !post?.user?._id) {
       setError("User not found");
       return;
     }
@@ -86,12 +118,12 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
     try {
       await dispatch(
         addComment({
-          postId: post._id,
+          postId: post?._id,
           commentText: commentToSend,
         })
       );
       setNewComment("");
-      dispatch(getAllCommentsByPost(post._id));
+      dispatch(getAllCommentsByPost(post?._id));
     } catch (error) {
       console.log(error);
       setError("Error adding comment");
@@ -99,7 +131,7 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
   };
 
   const handleTogglePostLike = async () => {
-    if (!post.user || !post.user._id) {
+    if (!post?.user || !post?.user?._id) {
       setError("User not found");
       return;
     }
@@ -107,7 +139,7 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
     try {
       const response = await dispatch(
         togglePostLike({
-          postId: post._id,
+          postId: post?._id,
         })
       ).unwrap();
 
@@ -116,7 +148,7 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
       setIsLiked(response.liked);
 
       // Обновить количество лайков
-      dispatch(getPostLikes(post._id));
+      dispatch(getPostLikes(post?._id));
     } catch (error) {
       console.log(error);
       setError("Error toggling post like");
@@ -124,29 +156,29 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
   };
 
   const handleToggleCommentLike = async (commentId) => {
-    if (!post._id || !commentId) {
+    if (!post?._id || !commentId) {
       setError("Invalid post or comment ID");
       return;
     }
     try {
       const response = await dispatch(
         toggleCommentLike({
-          postId: post._id,
+          postId: post?._id,
           commentId,
         })
       ).unwrap();
 
       setLikedComments((prevState) => ({
         ...prevState,
-        [post._id]: {
-          ...prevState[post._id], // сохраняем предыдущие лайки для других комментариев этого поста
+        [post?._id]: {
+          ...prevState[post?._id], // сохраняем предыдущие лайки для других комментариев этого поста
           [commentId]: response.liked, // обновляем лайк для текущего комментария
         },
       }));
 
       dispatch(
         getCommentLikes({
-          postId: post._id,
+          postId: post?._id,
           commentId,
         })
       );
@@ -168,113 +200,140 @@ function ExplorePostModal({ post, closeModal, isOpenModal }) {
           </div>
         </div>
         <div className={styles.rightContainer}>
-          <div className={styles.infoContainer}>
-            <div className={styles.userInfo}>
-              <img
-                src={post.user?.avatar || User}
-                alt="user photo"
-                className={styles.userPhoto}
-              />
-              <div className={styles.username}>{post?.user?.username}</div>
-            </div>
-            <button className={styles.optionBtn}>...</button>
-          </div>
-          <div className={styles.descriptionInfoContainer}>
-            <div className={styles.descriptionContainer}>
-              <img
-                src={post.user?.avatar || User}
-                alt="user photo"
-                className={styles.userPhoto}
-              />
-              <div className={styles.description}>
-                <span className={styles.username}>{post.user?.username}</span>
-                <span className={styles.descriptionInfo}>
-                  {post.description}
-                </span>
+          <div>
+            <div className={styles.infoContainer}>
+              <div className={styles.userInfo}>
+                <img
+                  src={post?.user?.avatar || User}
+                  alt="user photo"
+                  className={styles.userPhoto}
+                />
+                <div className={styles.username}>{post?.user?.username}</div>
               </div>
+              <button className={styles.optionBtn} onClick={openDialog}>
+                ...
+              </button>
             </div>
-            <div className={styles.dayInfo}>1 day</div>
-          </div>
-          <div className={styles.likesCountContainer}>
-            <div className={styles.liksAndMessageIcons}>
-              <img
-                src={Like}
-                alt="like"
-                className={`${styles.like} ${isLiked ? styles.liked : ""}`}
-                onClick={handleTogglePostLike}
-              />
-              <img src={Comment} alt="comment" className={styles.comment} />
-            </div>
-            <div>{postLikesCount[post._id] || 0} likes</div>
-            <div className={styles.dayInfo}>1 day</div>
-          </div>
-
-          <div className={styles.commentsContainer}>
-            {loading && <div>Loading comments...</div>}
-            {error && <div>Error loading comments: {error}</div>}
-            {!loading && (comments?.length === 0 || !comments) && (
-              <div>No comments</div>
-            )}
-            {!loading && comments?.length > 0 && (
-              <div>
-                {comments?.map((comment) => (
-                  <div
-                    key={
-                      comment?._id || `comment-${Math.random()}-${Date.now()}`
-                    }
-                    className={styles.commentItem}
-                  >
-                    <div className={styles.commentHeader}>
-                      <img
-                        src={comment?.user?.avatar || User}
-                        alt="User avatar"
-                        className={styles.userPhoto}
-                      />
-                      <span className={styles.username}>
-                        {comment?.user?.username}
-                      </span>
-                    </div>
-                    <div className={styles.commentText}>
-                      {comment?.commentText}
-                    </div>
-                    {console.log(
-                      likedComments[post._id]?.[comment._id],
-                      "likedComments[post._id]?.[comment._id]"
-                    )}
-                    <img
-                      src={Like}
-                      alt="like"
-                      className={`${styles.smallLike} ${
-                        likedComments[post._id]?.[comment._id]
-                          ? styles.smallLiked
-                          : ""
-                      }`}
-                      onClick={() => handleToggleCommentLike(comment._id)}
-                    />
-                    <span className={styles.commentLikesCount}>
-                      {commentLikesCount?.[post._id]?.[comment._id] || 0} likes
-                    </span>
+            <div className={styles.descriptionInfoContainer}>
+              <div className={styles.descriptionContainer}>
+                <img
+                  src={post?.user?.avatar || User}
+                  alt="user photo"
+                  className={styles.userPhoto}
+                />
+                <div className={styles.description}>
+                  <span className={styles.username}>
+                    {post?.user?.username}
+                  </span>
+                  <span className={styles.descriptionInfo}>
+                    {post.description}
+                  </span>
+                  <div className={styles.dayInfo}>
+                    {timeAgo(post?.createAt)}
                   </div>
-                ))}
+                </div>
               </div>
-            )}
-          </div>
+            </div>
 
-          <div className={styles.addComment}>
-            <img src={Smile} alt="smile" />
-            <input
-              type="text"
-              placeholder="Add a comment..."
-              className={styles.commentInput}
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-            />
-            <button className={styles.sendBtn} onClick={handleAddComment}>
-              Send
-            </button>
+            <div className={styles.commentsContainer}>
+              {loading && <div>Loading comments...</div>}
+              {error && <div>Error loading comments: {error}</div>}
+              {!loading && (comments?.length === 0 || !comments) && (
+                <div>No comments</div>
+              )}
+              {!loading && comments?.length > 0 && (
+                <div className={styles.comments}>
+                  {comments?.map((comment) => (
+                    <div
+                      key={
+                        comment?._id || `comment-${Math.random()}-${Date.now()}`
+                      }
+                      className={styles.commentItemContainer}
+                    >
+                      <div className={styles.commentItem}>
+                        <div className={styles.commentHeader}>
+                          <img
+                            src={comment?.user?.avatar || User}
+                            alt="User avatar"
+                            className={styles.userPhoto}
+                          />
+                          <span className={styles.username}>
+                            {comment?.user?.username}
+                          </span>
+                        </div>
+                        <div className={styles.commentTextContainer}>
+                          <div className={styles.commentText}>
+                            {comment?.commentText}
+                          </div>
+                          <img
+                            src={Like}
+                            alt="like"
+                            className={`${styles.smallLike} ${
+                              likedComments[post?._id]?.[comment?._id]
+                                ? styles.smallLiked
+                                : ""
+                            }`}
+                            onClick={() =>
+                              handleToggleCommentLike(comment?._id)
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className={styles.likeAndTimeContainer}>
+                        <span className={styles.dayInfoLike}>
+                          {timeAgo(comment?.createAt)}
+                        </span>
+                        <span className={styles.commentLikesCount}>
+                          {commentLikesCount?.[post?._id]?.[comment?._id] || 0}{" "}
+                          likes
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <div>
+            <div className={styles.likesCountContainer}>
+              <div className={styles.liksAndMessageIcons}>
+                <img
+                  src={Like}
+                  alt="like"
+                  className={`${styles.like} ${isLiked ? styles.liked : ""}`}
+                  onClick={handleTogglePostLike}
+                />
+                <img src={Comment} alt="comment" className={styles.comment} />
+              </div>
+              <div className={styles.postCount}>
+                {postLikesCount[post?._id] || 0} likes
+              </div>
+              <div className={styles.dayInfo}>{timeAgo(post?.createAt)}</div>
+            </div>
+            <div className={styles.addComment}>
+              <img src={Smile} alt="smile" />
+              <input
+                type="text"
+                placeholder="Add a comment..."
+                className={styles.commentInput}
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+              />
+              <button className={styles.sendBtn} onClick={handleAddComment}>
+                Send
+              </button>
+            </div>
           </div>
         </div>
       </div>
+      {isDialogOpen && (
+        <PostDialog
+          onCloseDialog={closeDialog}
+          isDialogOpen={isDialogOpen}
+          post={post}
+          closedModal={closeModal}
+        />
+      )}
     </div>
   );
 }
@@ -284,6 +343,7 @@ ExplorePostModal.propTypes = {
     _id: PropTypes.string, // Идентификатор поста
     description: PropTypes.string, // Описание поста
     image: PropTypes.string, // Изображение поста
+    createAt: PropTypes.string,
     user: PropTypes.shape({
       _id: PropTypes.string, // Идентификатор пользователя
       username: PropTypes.string, // Имя пользователя

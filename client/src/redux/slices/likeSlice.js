@@ -41,7 +41,13 @@ export const toggleCommentLike = createAsyncThunk(
 // Async thunk для получения количества лайков на пост
 export const getPostLikes = createAsyncThunk(
   "likes/getPostLikes",
-  async (postId, { rejectWithValue }) => {
+  async (postId, { getState, rejectWithValue }) => {
+    const postExists = getState().posts.posts.some(
+      (post) => post._id === postId
+    );
+    if (!postExists) {
+      return rejectWithValue("Post was deleted, likes not found");
+    }
     try {
       const response = await apiClient.get(`/likes/likeCount/${postId}`);
       return {
@@ -60,7 +66,21 @@ export const getPostLikes = createAsyncThunk(
 // Async thunk для получения количества лайков на комментарий
 export const getCommentLikes = createAsyncThunk(
   "likes/getCommentLikes",
-  async ({ postId, commentId }, { rejectWithValue }) => {
+  async ({ postId, commentId }, { getState, rejectWithValue }) => {
+    const postExists = getState().posts.posts.some(
+      (post) => post._id === postId
+    );
+    if (!postExists) {
+      return rejectWithValue(`Post with id ${postId} not found`);
+    }
+
+    // Проверяем, существует ли комментарий с данным commentId для этого поста
+    const commentExists = getState().comments.comments.some(
+      (comment) => comment._id === commentId && comment.post === postId
+    );
+    if (!commentExists) {
+      return rejectWithValue("Comment was deleted, likes not found");
+    }
     console.log("Received postId:", postId); // Логирование postId
     console.log("Received commentId:", commentId); // Логирование commentId
     try {

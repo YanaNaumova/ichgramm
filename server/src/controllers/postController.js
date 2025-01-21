@@ -81,7 +81,7 @@ export async function createPost(req, res) {
     }
 
     await newPost.save();
-    console.log("Post saved successfully in posts collection:", newPost);
+
     user.posts.push(newPost._id);
     await user.save();
 
@@ -194,12 +194,16 @@ export async function updatePost(req, res) {
     const { id: postId } = req.params;
     const { description } = req.body;
     const userId = req.user.id;
+
+    // Найдем пользователя
     const user = await User.findById(userId).populate("posts");
     if (!user) {
       return res
         .status(404)
         .json({ message: `User with id ${userId} was not found` });
     }
+
+    // Найдем пост
     const post = user.posts.find((post) => post._id.toString() === postId);
     if (!post) {
       return res
@@ -207,29 +211,12 @@ export async function updatePost(req, res) {
         .json({ message: `Post with id ${postId} was not found` });
     }
 
-    if (description && post.description !== description) {
+    // Обновим описание, если оно изменилось
+    if (description && description !== post.description) {
       post.description = description;
     }
 
-    // if (req.files && req.files.length > 0) {
-    //   const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    //   const imageArray = [];
-    //   for (const file of req.files) {
-    //     if (!allowedTypes.includes(file.mimetype)) {
-    //       return res.status(400).json({
-    //         message: "Invalid file type. Only JPEG, PNG, and GIF are allowed.",
-    //       });
-    //     }
-    //     const base64Image = file.buffer.toString("base64");
-    //     const base64EncodedImage = `data:${file.mimetype};base64,${base64Image}`;
-    //     imageArray.push(base64EncodedImage);
-    //   }
-    //   post.images = imageArray;
-    // }
-    if (!req.file) {
-      return res.status(400).json({ message: "The post photos are not added" });
-    }
-
+    // Обработаем файл изображения
     if (req.file) {
       const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
 
@@ -238,21 +225,28 @@ export async function updatePost(req, res) {
           message: "Invalid file type. Only JPEG, PNG, and GIF are allowed.",
         });
       }
+
+      // Преобразуем изображение в base64
       const base64Image = req.file.buffer.toString("base64");
       const base64EncodedImage = `data:${req.file.mimetype};base64,${base64Image}`;
-      post.image = base64EncodedImage;
+      post.image = base64EncodedImage; // Обновляем изображение поста
     }
 
+    // Сохраняем изменения
     await post.save();
-    res
-      .status(200)
-      .json({ message: `Post with id ${postId} was updated`, post });
+
+    // Возвращаем обновленный пост
+    const populatedPost = await post.populate("user");
+
+    res.status(200).json({
+      message: "Post updated successfully",
+      updatePost: populatedPost,
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Server internaal error", error: error.message });
+    return res.status(500).json({ message: "Server internal error", error });
   }
 }
+
 export async function getAllPosts(req, res) {
   try {
     const posts = await Post.find();

@@ -1,10 +1,15 @@
 import { NavLink } from "react-router-dom";
 import Create from "../../assets/icons/create.svg";
 import Explore from "../../assets/icons/explore.svg";
+import ExploreFill from "../../assets/icons/exploreFill.svg";
 import Home from "../../assets/icons/home.svg";
+import HomeFill from "../../assets/icons/homeFill.svg";
 import Like from "../../assets/icons/like.svg";
+import LikeFill from "../../assets/icons/likeFill.svg";
 import Message from "../../assets/icons/message.svg";
+import MessageFill from "../../assets/icons/messageFill.svg";
 import Search from "../../assets/icons/search.svg";
+import SearchFill from "../../assets/icons/searchFill.svg";
 import User from "../../assets/icons/user.svg";
 import styles from "./styles.module.css";
 import Logo from "../../assets/icons/logo.svg";
@@ -31,6 +36,7 @@ function SideNav() {
 
   const getClassName = (link) =>
     activeLink === link ? styles.activeLink : styles.link;
+
   return (
     <nav className={styles.sideNavContainer}>
       <img src={Logo} alt="logo" className={styles.logoImg} />
@@ -39,7 +45,11 @@ function SideNav() {
         onClick={() => handleLinkClick("/home")}
         className={getClassName("/home")}
       >
-        <img src={Home} alt="home" className={styles.icons} />
+        <img
+          src={activeLink === "/home" ? HomeFill : Home}
+          alt="home"
+          className={styles.icons}
+        />
         <span className={styles.spanText}>Home</span>
       </NavLink>
       <NavLink
@@ -47,7 +57,11 @@ function SideNav() {
         onClick={() => handleLinkClick("/search")}
         className={getClassName("/search")}
       >
-        <img src={Search} alt="search" className={styles.icons} />
+        <img
+          src={activeLink === "/search" ? SearchFill : Search}
+          alt="search"
+          className={styles.icons}
+        />
         <span className={styles.spanText}>Search</span>
       </NavLink>
       <NavLink
@@ -55,7 +69,11 @@ function SideNav() {
         onClick={() => handleLinkClick("/explore")}
         className={getClassName("/explore")}
       >
-        <img src={Explore} alt="explore" className={styles.icons} />
+        <img
+          src={activeLink === "/explore" ? ExploreFill : Explore}
+          alt="explore"
+          className={styles.icons}
+        />
         <span className={styles.spanText}>Explore</span>
       </NavLink>
       <NavLink
@@ -63,7 +81,11 @@ function SideNav() {
         onClick={() => handleLinkClick("/message")}
         className={getClassName("/message")}
       >
-        <img src={Message} alt="message" className={styles.icons} />
+        <img
+          src={activeLink === "/message" ? MessageFill : Message}
+          alt="message"
+          className={styles.icons}
+        />
         <span className={styles.spanText}>Message</span>
       </NavLink>
       <NavLink
@@ -71,7 +93,11 @@ function SideNav() {
         onClick={() => handleLinkClick("/notifications")}
         className={getClassName("/notifications")}
       >
-        <img src={Like} alt="notifications" className={styles.icons} />
+        <img
+          src={activeLink === "/notifications" ? LikeFill : Like}
+          alt="notifications"
+          className={styles.icons}
+        />
         <span className={styles.spanText}>Notifications</span>
       </NavLink>
       <NavLink

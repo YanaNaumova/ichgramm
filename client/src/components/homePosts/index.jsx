@@ -92,7 +92,7 @@ function HomePosts() {
               className={styles.userPhoto}
             />
             <div className={styles.username}>{post?.user?.username}</div>
-            <div className={styles.time}>{`${timeAgo(post.createAt)}`}</div>
+            <div className={styles.time}>{`• ${timeAgo(post.createAt)} •`}</div>
             <button className={styles.followBtn}>follow</button>
           </div>
           <img

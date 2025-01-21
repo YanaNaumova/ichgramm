@@ -140,3 +140,14 @@
   cursor: pointer;
   text-align: left;
 }
+
+.gradient {
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px rgba(255, 105, 180, 0.9),
+    0 0 6px 1px rgba(255, 140, 0, 0.7), 0 0 10px -1px rgba(255, 105, 180, 0.6);
+  transition: all 0.3s ease;
+}
+.gradient:hover {
+  border-color: #f477e4;
+  box-shadow: 0 0 8px #f4b1db;
+}

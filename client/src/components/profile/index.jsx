@@ -43,7 +43,7 @@ function Profile() {
         <img
           src={user?.avatar || User}
           alt="user photo"
-          className={styles.userPhoto}
+          className={`${styles.userPhoto} ${styles.gradient}`}
         />
         <div className={styles.userProfileInfoContainer}>
           <div className={styles.btnContainer}>

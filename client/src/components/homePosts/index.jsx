@@ -89,7 +89,7 @@ function HomePosts() {
             <img
               src={post?.user?.avatar || User}
               alt="user photo"
-              className={styles.userPhoto}
+              className={`${styles.userPhoto} ${styles.gradient}`}
             />
             <div className={styles.username}>{post?.user?.username}</div>
             <div className={styles.time}>{`• ${timeAgo(post.createAt)} •`}</div>

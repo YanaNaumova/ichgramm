@@ -110,7 +110,7 @@ function CreateNewPost({ closeModal }) {
               <img
                 src={user?.avatar || User}
                 alt="user"
-                className={styles.userImg}
+                className={`${styles.userImg} ${styles.gradient}`}
               />
               <p className={styles.userName}>{user?.username}</p>
             </div>

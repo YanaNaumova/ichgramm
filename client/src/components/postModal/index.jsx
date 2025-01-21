@@ -186,7 +186,7 @@ function PostModal({ post, closeModal, isOpenModal }) {
                 <img
                   src={post?.user?.avatar || User}
                   alt="user photo"
-                  className={styles.userPhoto}
+                  className={`${styles.userPhoto} ${styles.gradient}`}
                 />
                 <div className={styles.username}>{post?.user?.username}</div>
               </div>
@@ -199,7 +199,7 @@ function PostModal({ post, closeModal, isOpenModal }) {
                 <img
                   src={post?.user?.avatar || User}
                   alt="user photo"
-                  className={styles.userPhoto}
+                  className={`${styles.userPhoto} ${styles.gradient}`}
                 />
                 <div className={styles.description}>
                   <span className={styles.username}>{post.user?.username}</span>

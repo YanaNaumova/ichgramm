@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { deletePost } from "../../redux/slices/postsSlice";
 import { updatePost } from "../../redux/slices/postsSlice";
+// import { getRandomPosts } from "../../redux/slices/postsSlice";
 
 function PostDialog({ post, onCloseDialog, isDialogOpen, closedModal }) {
   console.log(post, "POSTTTTT");
@@ -62,7 +63,7 @@ function PostDialog({ post, onCloseDialog, isDialogOpen, closedModal }) {
           image: editedImageFile,
         })
       );
-
+      // dispatch(getRandomPosts());
       setShowEditModal(false);
       closedModal();
     } catch (error) {

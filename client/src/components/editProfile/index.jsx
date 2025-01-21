@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 function EditProfile() {
   const { user, loading, error } = useSelector((state) => state.user);
-  console.log(user, loading, error, "user", "loading", "error");
+  console.log(loading, error, "loading", "error");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [username, setUsername] = useState(user?.username || "");

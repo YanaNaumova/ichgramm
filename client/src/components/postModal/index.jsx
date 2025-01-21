@@ -18,13 +18,12 @@ import {
 import PostDialog from "../postDialog";
 
 function PostModal({ post, closeModal, isOpenModal }) {
-  console.log(post.user, "POST.USER");
   const dispatch = useDispatch();
   const { comments, loading } = useSelector((state) => state.comments);
-  console.log(comments, "COMMENTS");
+
   const { postLikesCount, userPostLikes, commentLikesCount, userCommentLikes } =
     useSelector((state) => state.likes);
-  console.log(userCommentLikes, "userCommentLikes");
+
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
   const [isLiked, setIsLiked] = useState(userPostLikes?.[post?._id] || false);
@@ -222,11 +221,9 @@ function PostModal({ post, closeModal, isOpenModal }) {
                   className={styles.userPhoto}
                 />
                 <div className={styles.description}>
-                  <span className={styles.username}>
-                    {post?.user?.username}
-                  </span>
+                  <span className={styles.username}>{post.user?.username}</span>
                   <span className={styles.descriptionInfo}>
-                    {post.description}
+                    {post?.description}
                   </span>
                   <div className={styles.dayInfo}>
                     {timeAgo(post?.createAt)}

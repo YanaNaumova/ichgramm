@@ -52,34 +52,34 @@ export const getPostById = createAsyncThunk(
   "post/getPostById",
   async (postId) => {
     const response = await apiClient.get(`/posts/post/${postId}`);
-    console.log("Response from getPostById:", response.data);
     return response.data;
   }
 );
 
 export const updatePost = createAsyncThunk(
-  "posts/updatePost",
-  async ({ postId, updatedData }, { rejectWithValue }) => {
+  "posts/update",
+  async ({ postId, description, image }, { rejectWithValue }) => {
     try {
       const formData = new FormData();
-      formData.append("description", updatedData.description);
-      if (updatedData.image) {
-        formData.append("image", updatedData.image);
+      formData.append("description", description);
+      if (image) {
+        formData.append("image", image); // Прикрепляем изображение, если оно есть
       }
 
+      // Отправляем formData как данные запроса
       const response = await apiClient.put(
         `/posts/update/${postId}`,
-        formData,
+        formData, // Передаем formData напрямую
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "multipart/form-data", // Устанавливаем Content-Type
           },
         }
       );
 
-      return response.data;
+      return response.data; // Возвращаем ответ
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response.data || error.message);
     }
   }
 );
@@ -94,7 +94,7 @@ export const getRandomPosts = createAsyncThunk(
   async () => {
     try {
       const response = await apiClient.get("/random/randomPosts");
-      console.log("Response from server getRandomPosts:", response.data);
+
       return response.data;
     } catch (error) {
       throw error.response?.data || "Error fetching random posts";
@@ -159,20 +159,28 @@ const postsSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
+    builder.addCase(updatePost.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
     builder
-      .addCase(updatePost.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(updatePost.fulfilled, (state, action) => {
         state.loading = false;
-        const updatedPostIndex = state.posts.findIndex(
-          (post) => post._id === action.payload.post._id
+        const updatedPost = action.payload;
+        console.log(updatedPost, "updatedPost");
+        const postIndex = state.posts.findIndex(
+          (post) => post._id === updatedPost._id
         );
-        if (updatedPostIndex !== -1) {
-          state.posts[updatedPostIndex] = action.payload.post;
+
+        if (postIndex !== -1) {
+          // Обновляем пост в массиве
+          state.posts[postIndex] = {
+            ...state.posts[postIndex],
+            ...updatedPost, // Обновляем только изменённые поля
+          };
         }
       })
+
       .addCase(updatePost.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

@@ -81,13 +81,12 @@ export const getCommentLikes = createAsyncThunk(
     if (!commentExists) {
       return rejectWithValue("Comment was deleted, likes not found");
     }
-    console.log("Received postId:", postId); // Логирование postId
-    console.log("Received commentId:", commentId); // Логирование commentId
+
     try {
       const response = await apiClient.get(
         `/likes/likeCount/${postId}/${commentId}`
       );
-      console.log(response.data, "response.data");
+
       return {
         postId,
         commentId,

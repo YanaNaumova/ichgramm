@@ -12,12 +12,10 @@ export const getProfile = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const id = getState().auth?.user?.id || getState().auth?.user?._id;
-      console.log(getState().auth?.user?.id, "auth");
       if (!id) {
         throw new Error("User ID is undefined");
       }
       const response = await apiClient.get(`/users/profile/${id}`);
-      console.log(response.data, "data");
       return response.data.user;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -30,7 +28,6 @@ export const updateProfile = createAsyncThunk(
   async (userData, { getState, rejectWithValue }) => {
     try {
       const id = getState().auth?.user?.id || getState().auth?.user?._id;
-      console.log(getState().auth?.user?.id, "auth");
       if (!id) {
         throw new Error("User ID is undefined");
       }
@@ -40,7 +37,6 @@ export const updateProfile = createAsyncThunk(
         },
       });
 
-      console.log(response.data, "data");
       return response.data.user;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -61,7 +57,6 @@ const userSlice = createSlice({
       })
       .addCase(getProfile.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload, "action.payload");
         state.user = action.payload;
         localStorage.setItem("user", JSON.stringify(action.payload));
       })
@@ -76,7 +71,6 @@ const userSlice = createSlice({
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload, "action.payload");
         state.user = action.payload;
         localStorage.setItem("user", JSON.stringify(action.payload));
       })

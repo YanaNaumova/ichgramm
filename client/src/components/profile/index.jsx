@@ -9,10 +9,9 @@ import store from "../../redux/store";
 
 function Profile() {
   const { user, loading, error } = useSelector((state) => {
-    console.log(state.user, "state");
     return state.user;
   });
-  console.log(user?.posts, "user");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -29,17 +28,12 @@ function Profile() {
   const handleEditProfie = () => {
     navigate("/profile/edit");
   };
-  // console.log(user, "user");
-  console.log(loading, "loading");
-  console.log(error, "error");
 
   if (loading) {
-    console.log("isLoading: ", loading);
     return <div>Loading...</div>;
   }
 
   if (error) {
-    console.log("error: ", error);
     return <div>Error: {error.message}</div>;
   }
 

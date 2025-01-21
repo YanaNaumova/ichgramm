@@ -13,7 +13,6 @@ function Explore() {
   const { posts, loading, error } = useSelector((state) => state.posts);
   const [selectedPost, setSelectedPost] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
-  console.log(selectedPost, "selectedPost");
 
   useEffect(() => {
     const fetchData = async () => {

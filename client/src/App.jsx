@@ -15,16 +15,10 @@ import EditProfilePage from "./pages/editProfilePage";
 import NotFoundPage from "./pages/notFoundPage";
 import PostModal from "./components/postModal";
 import PostPage from "./pages/postPage";
-// import { useDispatch } from "react-redux";
-// import { useEffect } from "react";
-// import { getProfile } from "./redux/slices/userSlice";
 
 function App() {
   console.log("Текущее состояние стора:", store.getState());
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   dispatch(getProfile());
-  // }, [dispatch]);
+
   return (
     <div className="App">
       <Routes>
@@ -41,7 +35,9 @@ function App() {
               </div>
               <div className="rightContainer">
                 <Routes>
-                  <Route path="/home" element={<HomePage />} />
+                  <Route path="/home" element={<HomePage />}>
+                    <Route path="post/:postId" element={<PostModal />} />
+                  </Route>
                   <Route path="/search" element={<SearchPage />} />
                   <Route path="/explore" element={<ExplorePage />}>
                     <Route path="post/:postId" element={<PostModal />} />

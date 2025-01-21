@@ -32,9 +32,10 @@ function Explore() {
     navigate(`post/${post._id}`);
   };
 
-  const closeModal = () => {
+  const closeModal = async () => {
     setSelectedPost(null);
     setIsOpenModal(false);
+    await dispatch(getRandomPosts());
     navigate(-1);
   };
 

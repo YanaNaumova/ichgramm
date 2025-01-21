@@ -10,6 +10,8 @@ import Comment from "../../assets/icons/comment.svg";
 import { getPostLikes, togglePostLike } from "../../redux/slices/likeSlice";
 import { useState } from "react";
 import { getAllCommentsByPost } from "../../redux/slices/commentsSlice";
+import PostModal from "../postModal";
+import { useNavigate } from "react-router-dom";
 
 function HomePosts() {
   const { posts, loading } = useSelector((state) => state.posts);
@@ -17,6 +19,9 @@ function HomePosts() {
   const [likedPosts, setLikedPosts] = useState(userPostLikes);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [isOpenModal, setIsOpenModal] = useState(false);
   console.log(posts, loading, error);
   const limit = 30;
 
@@ -44,6 +49,19 @@ function HomePosts() {
       setLikedPosts(userPostLikes);
     }
   }, [userPostLikes]);
+
+  const handleImageClick = async (post) => {
+    setSelectedPost(post);
+    setIsOpenModal(true);
+    navigate(`post/${post._id}`);
+  };
+
+  const closeModal = async () => {
+    setSelectedPost(null);
+    setIsOpenModal(false);
+    await dispatch(getAllPosts());
+    navigate(-1);
+  };
 
   const handleTogglePostLike = async (postId) => {
     try {
@@ -81,6 +99,7 @@ function HomePosts() {
             src={post?.image}
             alt={post?.description}
             className={styles.postImg}
+            onClick={() => handleImageClick(post)}
           />
           <div className={styles.likeUndCommentContainer}>
             <div className={styles.likeUndCommentImgContainer}>
@@ -108,16 +127,31 @@ function HomePosts() {
             </div>
 
             {post?.description.length > limit && ( // Условие для отображения кнопки "more"
-              <button className={styles.moreBtn}>more</button>
+              <button
+                className={styles.moreBtn}
+                onClick={() => handleImageClick(post)}
+              >
+                more
+              </button>
             )}
           </div>
-          <button className={styles.commentsContainer}>
+          <button
+            className={styles.commentsContainer}
+            onClick={() => handleImageClick(post)}
+          >
             {post?.comments?.length > 0
               ? ` View all comments (${post?.comments?.length})`
               : `No comments`}
           </button>
         </div>
       ))}
+      {selectedPost && (
+        <PostModal
+          post={selectedPost}
+          isOpenModal={isOpenModal}
+          closeModal={closeModal}
+        />
+      )}
     </div>
   );
 }

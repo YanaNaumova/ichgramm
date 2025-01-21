@@ -249,7 +249,7 @@ export async function updatePost(req, res) {
 
 export async function getAllPosts(req, res) {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find().populate("user");
     if (posts.length === 0) {
       return res.status(200).json({ message: "No posts found", posts: [] });
     }

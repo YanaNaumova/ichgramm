@@ -1,0 +1,142 @@
+.postContainer {
+  display: flex;
+  flex-direction: column;
+  max-width: 404px;
+  height: 700px;
+  width: 100%;
+  border-bottom: 1px solid #dbdbdb;
+  gap: 12px;
+}
+
+.postImg {
+  max-width: 404px;
+  max-height: 505px;
+  width: 100%;
+  height: 100%;
+}
+
+.postsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 39px;
+  padding: 58px 0 38px 78px;
+}
+
+.userPhoto {
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.followBtn {
+  color: #0095f6;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  line-height: 15.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.username {
+  font-size: 12px;
+  font-weight: 700;
+  color: #000000;
+  line-height: 15.5px;
+}
+
+.time {
+  font-size: 12px;
+  line-height: 15.5px;
+  font-weight: 400;
+  color: #737373;
+}
+
+.likeUndCommentImgContainer {
+  display: flex;
+  gap: 14px;
+}
+
+.likeUndCommentContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.likeCount {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 15.5px;
+  color: #000000;
+}
+
+.like {
+  width: 20.34px;
+  height: 20.34px;
+  cursor: pointer;
+  filter: grayscale(100%);
+  transition: transform 0.2s, filter 0.2s;
+}
+
+.like:hover {
+  transform: scale(1.1);
+}
+
+.like.liked {
+  filter: invert(31%) sepia(81%) saturate(6438%) hue-rotate(349deg)
+    brightness(96%) contrast(108%);
+}
+
+.postDescriptionContainer {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.fullName {
+  font-size: 12px;
+  line-height: 15.5px;
+  font-weight: 700;
+  color: #000000;
+}
+
+.description {
+  font-size: 12px;
+  line-height: 15.5px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.moreBtn {
+  color: #737373;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  line-height: 15.5px;
+  font-weight: 400;
+  cursor: pointer;
+  padding: 0;
+}
+
+.commentsContainer {
+  color: #737373;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15.5px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  line-height: 15.5px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+}

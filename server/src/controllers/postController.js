@@ -14,19 +14,21 @@ export const uploadPostImages = upload.single("image");
 
 export async function getUserPosts(req, res) {
   try {
-    const userId = req.user.id;
-    const user = await User.findById(userId).populate("posts");
-    if (!user) {
-      return res
-        .status(404)
-        .json({ message: `User with id ${userId} was not found` });
-    }
-    const posts = user.posts;
-    if (posts.length === 0) {
+    const userId = req.user.id; // Получаем userId из запроса (предполагается, что он передается через middleware)
+
+    // Находим все посты, принадлежащие данному пользователю
+    const posts = await Post.find({ user: userId }).populate("user");
+
+    if (!posts || posts.length === 0) {
       return res.status(200).json({ message: "No posts found", posts: [] });
     }
-    res.status(200).json({ message: `Was found ${posts.length} post`, posts });
+
+    // Отправляем список постов обратно в ответе
+    res
+      .status(200)
+      .json({ message: `Found ${posts.length} post(s)`, posts: posts });
   } catch (error) {
+    console.error(error); // Логируем ошибку для удобства отладки
     res.status(500).json({ message: "Server internal error" });
   }
 }

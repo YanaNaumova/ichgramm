@@ -10,7 +10,7 @@ const initialState = {
 
 export const getUserPosts = createAsyncThunk("posts/userPosts", async () => {
   const response = await apiClient.get("/posts/posts");
-  return response;
+  return response.data;
 });
 
 export const createPost = createAsyncThunk(

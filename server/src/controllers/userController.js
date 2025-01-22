@@ -11,7 +11,17 @@ export async function getProfile(req, res) {
   try {
     const { id } = req.params;
 
-    const user = await User.findById(id).select("-password").populate("posts");
+    const user = await User.findById(id)
+      .select("-password")
+      .populate({
+        path: "posts",
+        populate: {
+          path: "user", // поле в post, которое ссылается на пользователя
+          model: "User", // указываем модель для поля user
+          select: "_id username avatar", // выбираем только нужные поля
+        },
+      });
+
     if (!user) {
       return res.status(404).json({
         message: `User with ID ${id} does not exist`,

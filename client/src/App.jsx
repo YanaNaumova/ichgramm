@@ -44,7 +44,9 @@ function App() {
                   </Route>
                   <Route path="/messages" element={<MessagePage />} />
                   <Route path="/notifications" element={<NotificationPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/profile" element={<ProfilePage />}>
+                    <Route path="post/:postId" element={<PostModal />} />
+                  </Route>
                   <Route path="/profile/edit" element={<EditProfilePage />} />
                   <Route path="/post/:postId" element={<PostPage />}>
                     <Route path="post/:postId" element={<PostModal />} />

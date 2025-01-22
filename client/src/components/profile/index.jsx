@@ -6,11 +6,15 @@ import { logout } from "../../redux/slices/authSlice";
 import User from "../../assets/icons/user.svg";
 import { useEffect } from "react";
 import store from "../../redux/store";
+import PostModal from "../postModal";
+import { useState } from "react";
 
 function Profile() {
   const { user, loading, error } = useSelector((state) => {
     return state.user;
   });
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -27,6 +31,19 @@ function Profile() {
 
   const handleEditProfie = () => {
     navigate("/profile/edit");
+  };
+
+  const handleImageClick = (post) => {
+    setSelectedPost(post);
+    setIsOpenModal(true);
+    dispatch(getProfile());
+    navigate(`post/${post._id}`);
+  };
+
+  const closeModal = async () => {
+    setSelectedPost(null);
+    setIsOpenModal(false);
+    navigate(-1);
   };
 
   if (loading) {
@@ -77,18 +94,29 @@ function Profile() {
       </div>
       <div className={styles.userProfilePostsContainer}>
         {user?.posts?.length > 0 ? (
-          user.posts.map((post, index) => (
-            <img
-              key={index}
-              src={post?.image}
-              alt="posts"
-              className={styles.postImage}
-            />
-          ))
+          <>
+            {console.log(user?.posts, "user?.posts")}
+            {user.posts.map((post, index) => (
+              <img
+                key={index}
+                src={post?.image}
+                alt="posts"
+                className={styles.postImage}
+                onClick={() => handleImageClick(post)}
+              />
+            ))}
+          </>
         ) : (
           <p>No posts available</p>
         )}
       </div>
+      {selectedPost && (
+        <PostModal
+          post={selectedPost}
+          isOpenModal={isOpenModal}
+          closeModal={closeModal}
+        />
+      )}
     </div>
   );
 }

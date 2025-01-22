@@ -2,10 +2,11 @@ import styles from "./styles.module.css";
 import { getRandomPosts } from "../../redux/slices/postsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import store from "../../redux/store";
+// import store from "../../redux/store";
 import PostModal from "../postModal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import store from "../../redux/store";
 
 function Explore() {
   const dispatch = useDispatch();
@@ -39,10 +40,11 @@ function Explore() {
     navigate(-1);
   };
 
-  console.log("Текущее состояние стора в profile:", store.getState());
+  // console.log("Текущее состояние стора в profile:", store.getState());
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  console.log("Explore:", store.getState().user);
   return (
     <div className={styles.exploreContainer}>
       <div className={styles.contentContainer}>

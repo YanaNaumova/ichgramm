@@ -12,6 +12,7 @@ import { useState } from "react";
 import { getAllCommentsByPost } from "../../redux/slices/commentsSlice";
 import PostModal from "../postModal";
 import { useNavigate } from "react-router-dom";
+import store from "../../redux/store";
 
 function HomePosts() {
   const { posts, loading } = useSelector((state) => state.posts);
@@ -22,7 +23,7 @@ function HomePosts() {
   const navigate = useNavigate();
   const [selectedPost, setSelectedPost] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
-  console.log(posts, loading, error);
+  console.log(loading, error);
   const limit = 30;
 
   useEffect(() => {
@@ -80,7 +81,7 @@ function HomePosts() {
       setError("Error toggling post like");
     }
   };
-
+  console.log("Home:", store.getState().user);
   return (
     <div className={styles.postsContainer}>
       {posts.map((post) => (

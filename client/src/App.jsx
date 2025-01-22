@@ -10,14 +10,14 @@ import NotificationPage from "./pages/notificationPage";
 import MessagePage from "./pages/messagePage";
 import ExplorePage from "./pages/explorePage";
 import HomePage from "./pages/homePage";
-import store from "./redux/store";
+// import store from "./redux/store";
 import EditProfilePage from "./pages/editProfilePage";
 import NotFoundPage from "./pages/notFoundPage";
 import PostModal from "./components/postModal";
 import PostPage from "./pages/postPage";
 
 function App() {
-  console.log("Текущее состояние стора:", store.getState());
+  // console.log("Текущее состояние стора:", store.getState());
 
   return (
     <div className="App">

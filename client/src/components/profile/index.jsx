@@ -19,7 +19,7 @@ function Profile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log("Текущее состояние стора в profile:", store.getState());
+  // console.log(":", store.getState());
   useEffect(() => {
     dispatch(getProfile());
   }, [dispatch]);
@@ -36,13 +36,15 @@ function Profile() {
   const handleImageClick = (post) => {
     setSelectedPost(post);
     setIsOpenModal(true);
-    dispatch(getProfile());
     navigate(`post/${post._id}`);
   };
 
   const closeModal = async () => {
     setSelectedPost(null);
     setIsOpenModal(false);
+    console.log("До getProfile:", store.getState().user); // Текущее состояние
+    await dispatch(getProfile());
+    console.log("После getProfile:", store.getState().user); // Новое состояние
     navigate(-1);
   };
 
@@ -54,6 +56,7 @@ function Profile() {
     return <div>Error: {error.message}</div>;
   }
 
+  console.log("profile:", store.getState().user); // Текущее состояние
   return (
     <div className={styles.userProfileContainer}>
       <div className={styles.userProfileInfoAndPhotoContainer}>
@@ -95,7 +98,6 @@ function Profile() {
       <div className={styles.userProfilePostsContainer}>
         {user?.posts?.length > 0 ? (
           <>
-            {console.log(user?.posts, "user?.posts")}
             {user.posts.map((post, index) => (
               <img
                 key={index}

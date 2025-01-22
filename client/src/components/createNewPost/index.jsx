@@ -18,8 +18,8 @@ function CreateNewPost({ closeModal }) {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.user);
-  const { posts, loading, error } = useSelector((state) => state.posts);
-  console.log(posts, "posts");
+  const { loading, error } = useSelector((state) => state.posts);
+
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {

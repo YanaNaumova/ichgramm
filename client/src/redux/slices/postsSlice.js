@@ -167,7 +167,6 @@ const postsSlice = createSlice({
       .addCase(updatePost.fulfilled, (state, action) => {
         state.loading = false;
         const updatedPost = action.payload;
-        console.log(updatedPost, "updatedPost");
         const postIndex = state.posts.findIndex(
           (post) => post._id === updatedPost._id
         );

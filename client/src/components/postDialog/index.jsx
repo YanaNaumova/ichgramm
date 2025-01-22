@@ -8,7 +8,6 @@ import { updatePost } from "../../redux/slices/postsSlice";
 // import { getRandomPosts } from "../../redux/slices/postsSlice";
 
 function PostDialog({ post, onCloseDialog, isDialogOpen, closedModal }) {
-  console.log(post, "POSTTTTT");
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const user = useSelector((state) => state.user.user);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -16,9 +15,6 @@ function PostDialog({ post, onCloseDialog, isDialogOpen, closedModal }) {
   const [editedImage, setEditedImage] = useState(post?.image);
   const [editedImageFile, setEditedImageFile] = useState(null); // Редактируемое изображение
   const dispatch = useDispatch();
-
-  console.log(showEditModal, "showEditModal");
-  console.log(editedCaption, "editedCaption");
 
   function handelConfirm() {
     dispatch(deletePost(post._id));

@@ -82,15 +82,12 @@ function SearchBar({ closeSearchModal }) {
         {searchedUsers?.length > 0 && (
           <div className={styles.foundUsersContainer}>
             {searchedUsers.map((user) => (
-              <div
-                className={styles.foundUser}
-                key={user._id}
-                onClick={() => handleUserClick(user._id)}
-              >
+              <div className={styles.foundUser} key={user._id}>
                 <img
                   src={user?.avatar || User}
                   alt=""
                   className={styles.avatar}
+                  onClick={() => handleUserClick(user._id)}
                 />
                 <div className={styles.username}>{user?.username}</div>
               </div>

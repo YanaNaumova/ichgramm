@@ -17,9 +17,11 @@ import {
 } from "../../redux/slices/likeSlice";
 import PostDialog from "../postDialog";
 import { timeAgo } from "../../helpers";
+import { useNavigate } from "react-router-dom";
 
 function PostModal({ post, closeModal, isOpenModal }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { comments, loading } = useSelector((state) => state.comments);
 
   const { postLikesCount, userPostLikes, commentLikesCount, userCommentLikes } =
@@ -168,6 +170,10 @@ function PostModal({ post, closeModal, isOpenModal }) {
     }
   };
 
+  const handleUserClick = (userId) => {
+    navigate(`/profile/${userId}`);
+  };
+
   return (
     <div className={styles.modalContainer} onClick={closeModal}>
       <div
@@ -187,6 +193,9 @@ function PostModal({ post, closeModal, isOpenModal }) {
                   src={post?.user?.avatar || User}
                   alt="user photo"
                   className={`${styles.userPhoto} ${styles.gradient}`}
+                  onClick={() => {
+                    handleUserClick(post?.user?._id);
+                  }}
                 />
                 <div className={styles.username}>{post?.user?.username}</div>
               </div>
@@ -200,6 +209,9 @@ function PostModal({ post, closeModal, isOpenModal }) {
                   src={post?.user?.avatar || User}
                   alt="user photo"
                   className={`${styles.userPhoto} ${styles.gradient}`}
+                  onClick={() => {
+                    handleUserClick(post?.user?._id);
+                  }}
                 />
                 <div className={styles.description}>
                   <span className={styles.username}>{post.user?.username}</span>
@@ -234,6 +246,9 @@ function PostModal({ post, closeModal, isOpenModal }) {
                             src={comment?.user?.avatar || User}
                             alt="User avatar"
                             className={styles.userPhoto}
+                            onClick={() => {
+                              handleUserClick(comment?.user?._id);
+                            }}
                           />
                           <span className={styles.username}>
                             {comment?.user?.username}

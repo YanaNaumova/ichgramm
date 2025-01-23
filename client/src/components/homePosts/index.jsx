@@ -81,6 +81,10 @@ function HomePosts() {
       setError("Error toggling post like");
     }
   };
+
+  const handleUserClick = (userId) => {
+    navigate(`/profile/${userId}`);
+  };
   console.log("Home:", store.getState().user);
   return (
     <div className={styles.postsContainer}>
@@ -91,6 +95,7 @@ function HomePosts() {
               src={post?.user?.avatar || User}
               alt="user photo"
               className={`${styles.userPhoto} ${styles.gradient}`}
+              onClick={() => handleUserClick(post?.user?._id)}
             />
             <div className={styles.username}>{post?.user?.username}</div>
             <div className={styles.time}>{`• ${timeAgo(post.createAt)} •`}</div>

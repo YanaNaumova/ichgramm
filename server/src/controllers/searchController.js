@@ -12,12 +12,14 @@ export async function searchUser(req, res) {
         { username: { $regex: `${query}`, $options: "i" } },
         { full_name: { $regex: `${query}`, $options: "i" } },
       ],
-    });
+    }).populate("posts");
     if (users.length === 0) {
-      return res.status(404).json({ message: "No users found" });
+      return res.status(200).json({ message: "No users found", users: [] }); // 200 OK
     }
-    res.status(200).json({ message: "users found", users });
+    res.status(200).json({ message: "users found", users: users });
   } catch (error) {
-    res.status(500).json({ message: "Server internal error", error: error });
+    res
+      .status(500)
+      .json({ message: "Server internal error", error: error.message });
   }
 }

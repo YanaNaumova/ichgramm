@@ -1,0 +1,92 @@
+.header {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 30px;
+  color: #000000;
+}
+
+.searchInput {
+  max-width: 365px;
+  width: 100%;
+  height: 40px;
+  background-color: #efefef;
+  padding: 10.5px 16px 10.5px 16px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+}
+
+.searchInputContainer {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.searchInput:focus {
+  border: none;
+}
+
+.searchInput::placeholder {
+  color: #737373;
+  font-size: 16px;
+}
+
+.searchContainer {
+  padding: 24px 16px 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  height: 100%;
+  max-width: 397px;
+  width: 100%;
+  background-color: red;
+}
+
+.notFoundUsers {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 700;
+  color: #000000;
+}
+
+.foundUsersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.foundUser {
+  display: flex;
+  gap: 8px;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+}
+
+.username {
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 18px;
+  color: #000000;
+}
+
+.recent {
+  font-weight: 700;
+  line-height: 20px;
+  font-size: 16px;
+  color: #000000;
+}
+
+.clearIcon {
+  position: absolute;
+  top: 50%;
+  right: 10px; /* Отступ справа */
+  transform: translateY(-50%);
+  width: 20px; /* Размер крестика */
+  height: 20px;
+  cursor: pointer;
+}

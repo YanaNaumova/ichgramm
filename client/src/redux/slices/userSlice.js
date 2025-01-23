@@ -3,6 +3,7 @@ import apiClient from "../../api/apiClient";
 
 const initialState = {
   user: JSON.parse(localStorage.getItem("user")),
+  searchedUsers: [],
   loading: false,
   error: null,
 };

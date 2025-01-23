@@ -4,6 +4,7 @@ import postsReducer from "./slices/postsSlice.js";
 import userRrducer from "./slices/userSlice.js";
 import commentsReducer from "./slices/commentsSlice.js";
 import likeReducer from "./slices/likeSlice.js";
+import searchUsersReducer from "./slices/searchUsers.js";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     user: userRrducer,
     comments: commentsReducer,
     likes: likeReducer,
+    searchedUsers: searchUsersReducer,
   },
 });
 

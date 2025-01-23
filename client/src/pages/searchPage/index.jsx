@@ -1,9 +1,10 @@
 import Footer from "../../components/footer";
+import SearchBar from "../../components/searchBar";
 
 function SearchPage() {
   return (
     <>
-      <div>Search page</div>
+      <SearchBar />
       <Footer />
     </>
   );

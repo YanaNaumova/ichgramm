@@ -5,8 +5,9 @@ import { useState } from "react";
 import User from "../../assets/icons/user.svg";
 import { useEffect } from "react";
 import Clear from "../../assets/icons/clear.svg";
+import PropTypes from "prop-types";
 
-function SearchBar() {
+function SearchBar({ closeSearchModal }) {
   const { searchedUsers, loading, error } = useSelector(
     (state) => state.searchedUsers
   );
@@ -39,49 +40,58 @@ function SearchBar() {
   }
 
   return (
-    <div className={styles.searchContainer}>
-      <h1 className={styles.header}>Search</h1>
-      <div className={styles.searchInputContainer}>
-        <input
-          type="text"
-          value={query}
-          onChange={handleSearch}
-          placeholder="Search"
-          className={styles.searchInput}
-        />
-        <img
-          src={Clear}
-          alt="Clear"
-          onClick={handleClearSearch}
-          className={styles.clearIcon}
-        />
-      </div>
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-      {query.trim() && searchedUsers?.length === 0 && !loading && !error && (
-        <p className={styles.notFoundUsers}>No users found</p>
-      )}
-      {query.trim() === "" && hasRecent ? (
-        <h3 className={styles.recent}>Recent</h3>
-      ) : (
-        ""
-      )}
-      {searchedUsers?.length > 0 && (
-        <div className={styles.foundUsersContainer}>
-          {searchedUsers.map((user) => (
-            <div className={styles.foundUser} key={user._id}>
-              <img
-                src={user?.avatar || User}
-                alt=""
-                className={styles.avatar}
-              />
-              <div className={styles.username}>{user?.username}</div>
-            </div>
-          ))}
+    <div className={styles.modalContainer} onClick={closeSearchModal}>
+      <div
+        className={styles.searchContainer}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h1 className={styles.header}>Search</h1>
+        <div className={styles.searchInputContainer}>
+          <input
+            type="text"
+            value={query}
+            onChange={handleSearch}
+            placeholder="Search"
+            className={styles.searchInput}
+          />
+          <img
+            src={Clear}
+            alt="Clear"
+            onClick={handleClearSearch}
+            className={styles.clearIcon}
+          />
         </div>
-      )}
+        {loading && <p>Loading...</p>}
+        {error && <p>{error}</p>}
+        {query.trim() && searchedUsers?.length === 0 && !loading && !error && (
+          <p className={styles.notFoundUsers}>No users found</p>
+        )}
+        {query.trim() === "" && hasRecent ? (
+          <h3 className={styles.recent}>Recent</h3>
+        ) : (
+          ""
+        )}
+        {searchedUsers?.length > 0 && (
+          <div className={styles.foundUsersContainer}>
+            {searchedUsers.map((user) => (
+              <div className={styles.foundUser} key={user._id}>
+                <img
+                  src={user?.avatar || User}
+                  alt=""
+                  className={styles.avatar}
+                />
+                <div className={styles.username}>{user?.username}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+
+SearchBar.propTypes = {
+  closeSearchModal: PropTypes.func.isRequired,
+};
 
 export default SearchBar;

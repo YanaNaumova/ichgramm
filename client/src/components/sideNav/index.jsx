@@ -16,10 +16,12 @@ import Logo from "../../assets/icons/logo.svg";
 import { useState } from "react";
 import CreateNewPost from "../createNewPost";
 import { useSelector } from "react-redux";
+import SearchBar from "../searchBar";
 
 function SideNav() {
   const [activeLink, setActiveLink] = useState("/home");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const { user } = useSelector((state) => state.user);
 
   function openModal() {
@@ -28,6 +30,14 @@ function SideNav() {
 
   function closeModal() {
     setIsModalOpen(false);
+  }
+
+  function openSearchModal() {
+    setIsSearchModalOpen(true);
+  }
+
+  function closeSearchModal() {
+    setIsSearchModalOpen(false);
   }
 
   const handleLinkClick = (link) => {
@@ -42,7 +52,10 @@ function SideNav() {
       <img src={Logo} alt="logo" className={styles.logoImg} />
       <NavLink
         to="/home"
-        onClick={() => handleLinkClick("/home")}
+        onClick={() => {
+          handleLinkClick("/home");
+          closeSearchModal();
+        }}
         className={getClassName("/home")}
       >
         <img
@@ -53,8 +66,11 @@ function SideNav() {
         <span className={styles.spanText}>Home</span>
       </NavLink>
       <NavLink
-        to="/search"
-        onClick={() => handleLinkClick("/search")}
+        onClick={(e) => {
+          e.preventDefault();
+          openSearchModal();
+          handleLinkClick("/search");
+        }}
         className={getClassName("/search")}
       >
         <img
@@ -66,7 +82,10 @@ function SideNav() {
       </NavLink>
       <NavLink
         to="/explore"
-        onClick={() => handleLinkClick("/explore")}
+        onClick={() => {
+          handleLinkClick("/explore");
+          closeSearchModal();
+        }}
         className={getClassName("/explore")}
       >
         <img
@@ -78,7 +97,10 @@ function SideNav() {
       </NavLink>
       <NavLink
         to="/messages"
-        onClick={() => handleLinkClick("/message")}
+        onClick={() => {
+          handleLinkClick("/message");
+          closeSearchModal();
+        }}
         className={getClassName("/message")}
       >
         <img
@@ -90,7 +112,10 @@ function SideNav() {
       </NavLink>
       <NavLink
         to="/notifications"
-        onClick={() => handleLinkClick("/notifications")}
+        onClick={() => {
+          handleLinkClick("/notifications");
+          closeSearchModal();
+        }}
         className={getClassName("/notifications")}
       >
         <img
@@ -105,6 +130,7 @@ function SideNav() {
           e.preventDefault();
           openModal();
           handleLinkClick("/create");
+          closeSearchModal();
         }}
         className={getClassName("/create")}
       >
@@ -113,7 +139,10 @@ function SideNav() {
       </NavLink>
       <NavLink
         to="/profile"
-        onClick={() => handleLinkClick("/profile")}
+        onClick={() => {
+          handleLinkClick("/profile");
+          closeSearchModal();
+        }}
         className={getClassName("/profile")}
       >
         <img
@@ -124,6 +153,7 @@ function SideNav() {
         <span className={styles.spanText}>Profile</span>
       </NavLink>
       {isModalOpen && <CreateNewPost closeModal={closeModal} />}
+      {isSearchModalOpen && <SearchBar closeSearchModal={closeSearchModal} />}
     </nav>
   );
 }

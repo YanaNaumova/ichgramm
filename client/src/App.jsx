@@ -5,7 +5,6 @@ import ProfilePage from "./pages/profilePage";
 import { Routes, Route, Navigate } from "react-router-dom";
 import FogotPasswordPage from "./pages/fogotPasswordPage";
 import SideNav from "./components/sideNav";
-import SearchPage from "./pages/searchPage";
 import NotificationPage from "./pages/notificationPage";
 import MessagePage from "./pages/messagePage";
 import ExplorePage from "./pages/explorePage";
@@ -38,7 +37,6 @@ function App() {
                   <Route path="/home" element={<HomePage />}>
                     <Route path="post/:postId" element={<PostModal />} />
                   </Route>
-                  <Route path="/search" element={<SearchPage />} />
                   <Route path="/explore" element={<ExplorePage />}>
                     <Route path="post/:postId" element={<PostModal />} />
                   </Route>

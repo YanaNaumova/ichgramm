@@ -1,11 +1,12 @@
 import styles from "./styles.module.css";
-import { getSearchUsers } from "../../redux/slices/searchUsers";
+import { getSearchUsers } from "../../redux/slices/searchUsersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import User from "../../assets/icons/user.svg";
 import { useEffect } from "react";
 import Clear from "../../assets/icons/clear.svg";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
 function SearchBar({ closeSearchModal }) {
   const { searchedUsers, loading, error } = useSelector(
@@ -20,6 +21,8 @@ function SearchBar({ closeSearchModal }) {
       setHasRecent(true); // Если найдены пользователи
     }
   }, [searchedUsers]);
+
+  const navigate = useNavigate();
 
   async function handleSearch(event) {
     const value = event.target.value;
@@ -38,6 +41,11 @@ function SearchBar({ closeSearchModal }) {
   function handleClearSearch() {
     setQuery("");
   }
+
+  const handleUserClick = (userId) => {
+    navigate(`/profile/${userId}`);
+    closeSearchModal();
+  };
 
   return (
     <div className={styles.modalContainer} onClick={closeSearchModal}>
@@ -74,7 +82,11 @@ function SearchBar({ closeSearchModal }) {
         {searchedUsers?.length > 0 && (
           <div className={styles.foundUsersContainer}>
             {searchedUsers.map((user) => (
-              <div className={styles.foundUser} key={user._id}>
+              <div
+                className={styles.foundUser}
+                key={user._id}
+                onClick={() => handleUserClick(user._id)}
+              >
                 <img
                   src={user?.avatar || User}
                   alt=""

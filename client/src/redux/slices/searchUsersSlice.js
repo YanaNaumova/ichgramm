@@ -12,7 +12,6 @@ export const getSearchUsers = createAsyncThunk(
   async (query, { rejectWithValue }) => {
     try {
       const response = await apiClient.get(`/search/users?query=${query}`);
-      console.log(response.data, "response data search Users");
       return response.data; // Возвращаем только список пользователей
     } catch (error) {
       return rejectWithValue(error.response?.data || error?.message);
@@ -32,7 +31,6 @@ const searchUserSlice = createSlice({
       })
       .addCase(getSearchUsers.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload, "action.payload searchUsers");
         state.searchedUsers = action.payload.users; // Добавляем список найденных пользователей
       })
       .addCase(getSearchUsers.rejected, (state, action) => {

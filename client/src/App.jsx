@@ -14,6 +14,7 @@ import EditProfilePage from "./pages/editProfilePage";
 import NotFoundPage from "./pages/notFoundPage";
 import PostModal from "./components/postModal";
 import PostPage from "./pages/postPage";
+import OtherProfile from "./components/otheProfile";
 
 function App() {
   // console.log("Текущее состояние стора:", store.getState());
@@ -50,6 +51,7 @@ function App() {
                     <Route path="post/:postId" element={<PostModal />} />
                   </Route>
                   <Route path="*" element={<NotFoundPage />} />
+                  <Route path="/profile/:userId" element={<OtherProfile />} />
                 </Routes>
               </div>
             </div>

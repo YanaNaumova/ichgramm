@@ -135,7 +135,7 @@ function OtherProfile() {
           )}
         </div>
       ) : (
-        <p>User not found</p>
+        ""
       )}
     </>
   );

@@ -51,7 +51,9 @@ function App() {
                     <Route path="post/:postId" element={<PostModal />} />
                   </Route>
                   <Route path="*" element={<NotFoundPage />} />
-                  <Route path="/profile/:userId" element={<OtherProfile />} />
+                  <Route path="/profile/:userId" element={<OtherProfile />}>
+                    <Route path="post/:postId" element={<PostModal />} />
+                  </Route>
                 </Routes>
               </div>
             </div>

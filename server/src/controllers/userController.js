@@ -1,5 +1,6 @@
 import User from "../models/userModel.js";
 import multer from "multer";
+import mongoose from "mongoose";
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -10,6 +11,12 @@ const upload = multer({
 export async function getProfile(req, res) {
   try {
     const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: `Invalid user ID: ${id}`,
+      });
+    }
 
     const user = await User.findById(id)
       .select("-password")

@@ -114,3 +114,10 @@
   border-color: #f477e4;
   box-shadow: 0 0 8px #f4b1db;
 }
+
+.error {
+  padding: 20px;
+  font-size: 16px;
+  line-height: 15px;
+  font-weight: 700;
+}

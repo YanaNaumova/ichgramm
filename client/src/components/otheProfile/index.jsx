@@ -63,7 +63,7 @@ function OtherProfile() {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <div className={styles.error}>{error.message}</div>;
   }
 
   console.log("profile:", store.getState().user); // Текущее состояние

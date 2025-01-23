@@ -16,8 +16,8 @@ function PostDialog({ post, onCloseDialog, isDialogOpen, closedModal }) {
   const [editedImageFile, setEditedImageFile] = useState(null); // Редактируемое изображение
   const dispatch = useDispatch();
 
-  function handelConfirm() {
-    dispatch(deletePost(post._id));
+  async function handelConfirm() {
+    await dispatch(deletePost(post._id));
     setIsConfirmDialogOpen(false);
     closedModal();
   }

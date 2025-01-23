@@ -8,14 +8,12 @@ import { useEffect } from "react";
 import store from "../../redux/store";
 import PostModal from "../postModal";
 import { useState } from "react";
-// import { getUserPosts } from "../../redux/slices/postsSlice";
 
 function Profile() {
   const { user, loading, error } = useSelector((state) => {
     return state.user;
   });
-  // const { posts } = useSelector((state) => state.posts.posts);
-  // console.log(posts, "posts");
+
   const [selectedPost, setSelectedPost] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -25,7 +23,6 @@ function Profile() {
   // console.log(":", store.getState());
   useEffect(() => {
     dispatch(getProfile());
-    // dispatch(getUserPosts());
   }, [dispatch]);
 
   const handleLogout = () => {
@@ -46,7 +43,7 @@ function Profile() {
   const closeModal = async () => {
     setSelectedPost(null);
     setIsOpenModal(false);
-    // await dispatch(getUserPosts());
+    await dispatch(getProfile());
     navigate(-1);
   };
 

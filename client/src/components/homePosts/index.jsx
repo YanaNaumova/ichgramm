@@ -84,7 +84,7 @@ function HomePosts() {
   console.log("Home:", store.getState().user);
   return (
     <div className={styles.postsContainer}>
-      {posts.map((post) => (
+      {posts?.map((post) => (
         <div className={styles.postContainer} key={post?._id}>
           <div className={styles.userInfo}>
             <img
@@ -122,12 +122,12 @@ function HomePosts() {
             <div className={styles.fullName}>{post?.user?.full_name}</div>
 
             <div className={styles.description}>
-              {post?.description.length > limit
+              {post?.description?.length > limit
                 ? `${post?.description.slice(0, limit)}...` // Убедитесь, что slice вызывается на строке, а не на длине
                 : post?.description}
             </div>
 
-            {post?.description.length > limit && ( // Условие для отображения кнопки "more"
+            {post?.description?.length > limit && ( // Условие для отображения кнопки "more"
               <button
                 className={styles.moreBtn}
                 onClick={() => handleImageClick(post)}

@@ -19,7 +19,9 @@ export async function randomPosts(req, res) {
 
     const postsWithUsers = await Promise.all(
       randomPosts.map(async (post) => {
-        const user = await User.findById(post.user).select("username avatar");
+        const user = await User.findById(post.user).select(
+          "_id username avatar"
+        );
         return { ...post, user };
       })
     );

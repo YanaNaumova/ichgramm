@@ -113,6 +113,7 @@ const postsSlice = createSlice({
         state.error = null;
       })
       .addCase(getUserPosts.fulfilled, (state, action) => {
+        console.log("Fetched User Posts:", action.payload);
         state.loading = false;
         state.posts = action.payload;
       })
@@ -127,7 +128,9 @@ const postsSlice = createSlice({
       })
       .addCase(createPost.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts.push(action.payload.newPost); // Добавляем новый пост в state
+        console.log("CREATE:", action.payload);
+        state.posts = [...state.posts, action.payload.newPost]; // Добавляем новый пост в state
+        console.log("Updated posts:", state.posts);
       })
       .addCase(createPost.rejected, (state, action) => {
         state.loading = false;
@@ -140,7 +143,9 @@ const postsSlice = createSlice({
       })
       .addCase(deletePost.fulfilled, (state, action) => {
         state.loading = false;
+        console.log("DELETEPOST:", action.payload);
         state.posts = state.posts.filter((post) => post._id !== action.payload);
+        console.log("Updated posts:", state.posts);
       })
       .addCase(deletePost.rejected, (state, action) => {
         state.loading = false;
@@ -166,6 +171,7 @@ const postsSlice = createSlice({
     builder
       .addCase(updatePost.fulfilled, (state, action) => {
         state.loading = false;
+        console.log(action.payload);
         const updatedPost = action.payload;
         const postIndex = state.posts.findIndex(
           (post) => post._id === updatedPost._id

@@ -4,3 +4,7 @@
 ● Настройка возможности лайкать и комментировать посты.
 ● Разработка поисковой системы для поиска пользователей.
 ● Взаимодействие с MongoDB через Mongoose для хранения всех данных.
+
+## API Documentation
+You can find the API documentation
+https://documenter.getpostman.com/view/16197301/2sAYQdkqJ7

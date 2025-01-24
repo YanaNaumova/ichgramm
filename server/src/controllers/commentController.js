@@ -28,8 +28,8 @@ export async function addComment(req, res) {
     post.comments.push(newComment._id);
     await post.save();
     const populatedComment = await Comment.findById(newComment._id).populate(
-      "user",
-      "username avatar"
+      "user"
+      // "username avatar"
     );
     res.status(200).json(populatedComment);
   } catch (error) {
@@ -140,7 +140,7 @@ export async function getAllCommentsByPost(req, res) {
       path: "comments",
       populate: {
         path: "user",
-        select: "username avatar",
+        // select: "username avatar",
       },
     });
     if (!post) {

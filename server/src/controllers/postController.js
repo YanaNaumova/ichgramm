@@ -18,8 +18,8 @@ export async function getUserPosts(req, res) {
 
     // Находим все посты, принадлежащие данному пользователю
     const posts = await Post.find({ user: userId }).populate(
-      "user",
-      "_id username avatar"
+      "user"
+      // "_id username avatar"
     );
 
     if (!posts || posts.length === 0) {
@@ -252,7 +252,8 @@ export async function updatePost(req, res) {
 
 export async function getAllPosts(req, res) {
   try {
-    const posts = await Post.find().populate("user", "_id username avatar");
+    const posts = await Post.find().populate("user");
+    //  "_id username avatar");
     if (posts.length === 0) {
       return res.status(200).json({ message: "No posts found", posts: [] });
     }

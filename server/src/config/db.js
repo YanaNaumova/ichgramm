@@ -11,6 +11,7 @@ async function connectDB() {
         useUnifiedTopology: true,
       }
     );
+    console.log("connect to Db");
   } catch (error) {
     console.error("Failed connect to DB");
     console.error(error);

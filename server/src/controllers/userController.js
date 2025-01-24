@@ -25,7 +25,7 @@ export async function getProfile(req, res) {
         populate: {
           path: "user", // поле в post, которое ссылается на пользователя
           model: "User", // указываем модель для поля user
-          select: "_id username avatar", // выбираем только нужные поля
+          // select: "_id username avatar", // выбираем только нужные поля
         },
       });
 

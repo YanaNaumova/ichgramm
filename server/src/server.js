@@ -27,6 +27,10 @@ async function startServer() {
   try {
     await connectDB();
 
+    app.get("/", (req, res) => {
+      res.send("Hello, world!");
+    });
+
     app.post("/api/hello", (req, res) => {
       res.send("Hello world");
     });

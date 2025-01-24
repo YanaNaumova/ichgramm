@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import multer from "multer";
 import Comment from "../models/commentModel.js";
 import { PostLike, CommentLike } from "../models/likeModel.js";
+import mongoose from "mongoose";
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -30,7 +31,47 @@ export async function getUserPosts(req, res) {
     res.status(200).json({ message: `Found ${posts.length} post(s)`, posts });
   } catch (error) {
     console.error(error); // Логируем ошибку для удобства отладки
-    res.status(500).json({ message: "Server internal error" });
+    res
+      .status(500)
+      .json({ message: "Server internal error", error: error.message });
+  }
+}
+
+export async function getByUserIdPosts(req, res) {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: `Invalid user ID: ${id}`,
+      });
+    }
+
+    // Ищем пользователя по id, исключаем пароль
+    const user = await User.findById(id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        message: `User with ID ${id} does not exist`,
+      });
+    }
+
+    // Теперь выполняем запрос для получения актуальных постов этого пользователя
+    const posts = await Post.find({ user: id }).populate({
+      path: "user", // подгружаем информацию о пользователе в каждом посте
+    });
+
+    if (!posts || posts.length === 0) {
+      return res.status(404).json({ message: "No posts found", posts: [] });
+    }
+
+    // Отправляем список постов обратно в ответе
+    res.status(200).json({ message: `Found ${posts.length} post(s)`, posts });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Server internal error", error: error.message });
   }
 }
 

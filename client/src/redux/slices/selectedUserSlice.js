@@ -12,7 +12,6 @@ export const getUserById = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await apiClient.get(`/users/profile/${userId}`);
-      console.log(response.data, " response.data selectedUser");
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error?.message);
@@ -32,7 +31,6 @@ const selectedUserSlice = createSlice({
       })
       .addCase(getUserById.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload, " action.payload selectedUser");
         state.selectedUser = action.payload.user;
       })
       .addCase(getUserById.rejected, (state, action) => {

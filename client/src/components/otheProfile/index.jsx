@@ -8,12 +8,15 @@ import store from "../../redux/store";
 import PostModal from "../postModal";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { getByUserIdPosts } from "../../redux/slices/postsSlice";
 
 function OtherProfile() {
   const { selectedUser, loading, error } = useSelector((state) => {
     return state.selectedUser;
   });
   const { user } = useSelector((state) => state.user);
+  const { posts } = useSelector((state) => state.posts);
+
   console.log(selectedUser, "selectedUser");
 
   const { userId } = useParams();
@@ -24,14 +27,15 @@ function OtherProfile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user._id === userId) {
+    if (user && user._id === userId) {
       navigate("/profile");
     }
-  }, [user._id, userId, navigate]);
+  }, [user._id, userId, user, navigate]);
 
   useEffect(() => {
     if (userId) {
       dispatch(getUserById(userId));
+      dispatch(getByUserIdPosts(userId));
     }
   }, [dispatch, userId]);
 
@@ -55,6 +59,7 @@ function OtherProfile() {
     setSelectedPost(null);
     setIsOpenModal(false);
     await dispatch(getUserById(userId));
+    await dispatch(getByUserIdPosts(userId));
     navigate(-1);
   };
 
@@ -110,9 +115,9 @@ function OtherProfile() {
             </div>
           </div>
           <div className={styles.userProfilePostsContainer}>
-            {selectedUser?.posts?.length > 0 ? (
+            {posts?.length > 0 ? (
               <>
-                {selectedUser?.posts?.map((post, index) => (
+                {posts?.map((post, index) => (
                   <img
                     key={index}
                     src={post?.image}

@@ -2,20 +2,17 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import apiClient from "../../api/apiClient";
 
 const initialState = {
-  user: JSON.parse(localStorage.getItem("user")),
+  // user: JSON.parse(localStorage.getItem("user")) || null,
+  user: null,
   loading: false,
   error: null,
 };
 
 export const getProfile = createAsyncThunk(
   "users/getProfile",
-  async (_, { getState, rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const id = getState().auth?.user?.id || getState().auth?.user?._id;
-      if (!id) {
-        throw new Error("User ID is undefined");
-      }
-      const response = await apiClient.get(`/users/profile/${id}`);
+      const response = await apiClient.get(`/users/profile`);
       return response.data.user;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -25,13 +22,9 @@ export const getProfile = createAsyncThunk(
 
 export const updateProfile = createAsyncThunk(
   "users/updateProfile",
-  async (userData, { getState, rejectWithValue }) => {
+  async (userData, { rejectWithValue }) => {
     try {
-      const id = getState().auth?.user?.id || getState().auth?.user?._id;
-      if (!id) {
-        throw new Error("User ID is undefined");
-      }
-      const response = await apiClient.put(`/users/profile/${id}`, userData, {
+      const response = await apiClient.put(`/users/profile`, userData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -58,7 +51,8 @@ const userSlice = createSlice({
       .addCase(getProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
-        localStorage.setItem("user", JSON.stringify(action.payload));
+        console.log(action.payload, "action.payload getProfile");
+        // localStorage.setItem("user", JSON.stringify(action.payload));
       })
       .addCase(getProfile.rejected, (state, action) => {
         state.loading = false;
@@ -72,7 +66,7 @@ const userSlice = createSlice({
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
-        localStorage.setItem("user", JSON.stringify(action.payload));
+        // localStorage.setItem("user", JSON.stringify(action.payload));
       })
       .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;

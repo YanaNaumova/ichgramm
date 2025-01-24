@@ -13,6 +13,14 @@ export const getUserPosts = createAsyncThunk("posts/userPosts", async () => {
   return response.data;
 });
 
+export const getByUserIdPosts = createAsyncThunk(
+  "posts/otherUserPosts",
+  async (id) => {
+    const response = await apiClient.get(`/posts/posts/${id}`);
+    return response.data;
+  }
+);
+
 export const createPost = createAsyncThunk(
   "posts/create",
   async ({ description, image }, { rejectWithValue }) => {
@@ -113,9 +121,8 @@ const postsSlice = createSlice({
         state.error = null;
       })
       .addCase(getUserPosts.fulfilled, (state, action) => {
-        console.log("Fetched User Posts:", action.payload);
         state.loading = false;
-        state.posts = action.payload;
+        state.posts = action.payload.posts;
       })
       .addCase(getUserPosts.rejected, (state, action) => {
         state.loading = false;
@@ -128,9 +135,7 @@ const postsSlice = createSlice({
       })
       .addCase(createPost.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("CREATE:", action.payload);
         state.posts = [...state.posts, action.payload.newPost]; // Добавляем новый пост в state
-        console.log("Updated posts:", state.posts);
       })
       .addCase(createPost.rejected, (state, action) => {
         state.loading = false;
@@ -143,9 +148,7 @@ const postsSlice = createSlice({
       })
       .addCase(deletePost.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("DELETEPOST:", action.payload);
         state.posts = state.posts.filter((post) => post._id !== action.payload);
-        console.log("Updated posts:", state.posts);
       })
       .addCase(deletePost.rejected, (state, action) => {
         state.loading = false;
@@ -171,7 +174,6 @@ const postsSlice = createSlice({
     builder
       .addCase(updatePost.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload);
         const updatedPost = action.payload;
         const postIndex = state.posts.findIndex(
           (post) => post._id === updatedPost._id
@@ -215,6 +217,19 @@ const postsSlice = createSlice({
       .addCase(getRandomPosts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(getByUserIdPosts.pending, (state) => {
+        state.status = "loading";
+      })
+      // Когда запрос завершен успешно
+      .addCase(getByUserIdPosts.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.posts = action.payload.posts; // Или другой путь к данным в ответе
+      })
+      // Когда запрос завершен с ошибкой
+      .addCase(getByUserIdPosts.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
       });
   },
 });

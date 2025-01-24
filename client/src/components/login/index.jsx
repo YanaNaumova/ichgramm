@@ -9,7 +9,7 @@ import {
   validateEmailOrUsername,
   passwordValidate,
 } from "../../utils/validations.js";
-import { getProfile } from "../../redux/slices/userSlice.js";
+// import { getProfile } from "../../redux/slices/userSlice.js";
 
 function Login() {
   const {
@@ -26,7 +26,7 @@ function Login() {
   const onSubmit = async (data) => {
     const result = await dispatch(loginUser(data));
     if (loginUser.fulfilled.match(result)) {
-      dispatch(getProfile());
+      // dispatch(getProfile());
       navigate("/home");
     }
   };

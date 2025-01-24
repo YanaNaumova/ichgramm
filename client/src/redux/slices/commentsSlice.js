@@ -51,6 +51,7 @@ const commentsSlice = createSlice({
       })
       .addCase(getAllCommentsByPost.fulfilled, (state, action) => {
         state.loading = false;
+        console.log(action.payload, "action.payload get all comments");
         state.comments = action.payload;
       })
       .addCase(getAllCommentsByPost.rejected, (state, action) => {
@@ -64,6 +65,7 @@ const commentsSlice = createSlice({
       .addCase(addComment.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
+        console.log(action.payload, "action.payload comment");
         state.comments.push(action.payload);
       })
       .addCase(addComment.rejected, (state, action) => {

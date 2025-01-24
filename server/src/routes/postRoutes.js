@@ -8,10 +8,12 @@ import {
   updatePost,
   getAllPosts,
   uploadPostImages,
+  getByUserIdPosts,
 } from "../controllers/postController.js";
 
 const router = Router();
 
+router.get("/posts/:id", authMiddleware, getByUserIdPosts);
 router.get("/posts", authMiddleware, getUserPosts);
 router.post("/create", authMiddleware, uploadPostImages, createPost);
 router.delete("/post/:id", authMiddleware, deletePost);

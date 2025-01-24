@@ -46,7 +46,7 @@ function EditProfile() {
       if (updateProfile.fulfilled.match(response)) {
         navigate("/profile");
       }
-      localStorage.setItem("user", JSON.stringify(response.payload));
+      // localStorage.setItem("user", JSON.stringify(response.payload));
     } catch (error) {
       console.error("Error updating user profile", error);
     }

@@ -15,10 +15,18 @@ import NotFoundPage from "./pages/notFoundPage";
 import PostModal from "./components/postModal";
 import PostPage from "./pages/postPage";
 import OtherProfile from "./components/otheProfile";
+import { getProfile } from "../../client/src/redux/slices/userSlice";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 function App() {
   // console.log("Текущее состояние стора:", store.getState());
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    // Диспатчим экшен для получения данных пользователя при загрузке
+    dispatch(getProfile());
+  }, [dispatch]);
   return (
     <div className="App">
       <Routes>

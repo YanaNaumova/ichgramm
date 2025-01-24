@@ -9,6 +9,10 @@ services:
       - "3000:3000" # Исправлен отступ
     depends_on:
       - mongodb
+    environment:
+      - MONGO_URI=${MONGO_URI_LOCAL} # По умолчанию используем локальную базу
+      - MONGO_URI_ATLAS=${MONGO_URI_ATLAS}
+      - SECRET_KEY=secretKey
     volumes:
       - ./server/.env:/app/.env
 

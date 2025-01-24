@@ -3,7 +3,7 @@ import "dotenv/config";
 
 async function connectDB() {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(process.env.MONGO_URI_LOCAL || MONGO_URI_ATLAS, {
       authSource: "admin",
       useNewUrlParser: true,
       useUnifiedTopology: true,

@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3"
 services:
   ichgram:
     build:
@@ -8,7 +8,7 @@ services:
     ports:
       - "3000:3000" # Исправлен отступ
     depends_on:
-      - mongo-database
+      - mongodb
     volumes:
       - ./server/.env:/app/.env
 
@@ -20,23 +20,19 @@ services:
     depends_on:
       - ichgram
     ports:
-      - "5173:5173"
+      - "3001:3001"
 
-  mongo-database:
-    container_name: mongo-database
-    image: mongo:7
-    restart: unless-stopped
+  mongodb:
     ports:
-      - "27018:27017"
-    command: --auth --bind_ip 0.0.0.0
+      - 27017:27017
+    image: mongo:6
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
-      MONGO_INITDB_DATABASE: ichgramm
-    env_file:
-      - ./server/.env
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=ichgramm
+    command: --auth --bind_ip 0.0.0.0
     volumes:
-      - ./data/db:/data/db
+      - mongo-data:/data/db
 
 volumes:
   mongo-data:

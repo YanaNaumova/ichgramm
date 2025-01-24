@@ -4,18 +4,20 @@ import mongoose from "mongoose";
 
 export async function addFollowing(req, res) {
   try {
-    const { followId } = req.body;
+    const { followId } = req.params;
 
     const userId = req.user.id;
-    if (followId === userId) {
-      return res.status(400).json({ message: "User cannot follow themselves" });
-    }
 
     if (!followId) {
       return res.status(404).json({ message: `followId is required` });
     }
+
     if (!mongoose.Types.ObjectId.isValid(followId)) {
       return res.status(400).json({ message: `Invalid followId` });
+    }
+
+    if (followId === userId) {
+      return res.status(400).json({ message: "User cannot follow themselves" });
     }
 
     const follower = await User.findById(followId);
@@ -45,6 +47,7 @@ export async function addFollowing(req, res) {
     const newFollower = new Follower({
       follower: user._id,
       following: follower._id,
+      created_at: new Date(),
     });
 
     await newFollower.save();
@@ -64,19 +67,18 @@ export async function addFollowing(req, res) {
 }
 export async function deleteFollowing(req, res) {
   try {
-    const { followId } = req.body;
+    const { followId } = req.params;
 
     const userId = req.user.id;
-
-    if (followId === userId) {
-      return res.status(400).json({ message: "User cannot follow themselves" });
-    }
 
     if (!followId) {
       return res.status(404).json({ message: `followId is required` });
     }
     if (!mongoose.Types.ObjectId.isValid(followId)) {
       return res.status(400).json({ message: `Invalid followId` });
+    }
+    if (followId === userId) {
+      return res.status(400).json({ message: "User cannot follow themselves" });
     }
 
     const follower = await User.findById(followId);
@@ -122,27 +124,35 @@ export async function deleteFollowing(req, res) {
 }
 export async function getFollowings(req, res) {
   try {
-    const userId = req.user.id;
+    const { userId } = req.params;
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "user was not found" });
     }
-    const following = await Follower.find({ follower: userId })
+    const followings = await Follower.find({ follower: userId })
       .populate("following", "username email")
       .exec();
-    if (!following || following.length === 0) {
+    if (!followings) {
       return res.status(404).json({ message: "following was not found" });
     }
-    res
-      .status(200)
-      .json({ message: `was found ${following.length} following`, following });
+    if (followings.length === 0) {
+      return res
+        .status(200)
+        .json({ message: "following was not found", followings: [] });
+    }
+    const followingCount = await Follower.countDocuments({ follower: userId });
+    res.status(200).json({
+      message: `was found ${followings.length} following`,
+      followings,
+      followingCount,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server internal error", error: error });
   }
 }
 export async function getFollowers(req, res) {
   try {
-    const userId = req.user.id;
+    const { userId } = req.params;
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "user was not found" });
@@ -150,12 +160,22 @@ export async function getFollowers(req, res) {
     const followers = await Follower.find({ following: userId })
       .populate("follower", "username email")
       .exec();
-    if (!followers || followers.length === 0) {
+    if (!followers) {
       return res.status(404).json({ message: "followers was not found" });
     }
-    res
-      .status(200)
-      .json({ message: `was found ${followers.length} followers`, followers });
+
+    if (followers.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "followers was not found", followers: [] });
+    }
+
+    const followersCount = await Follower.countDocuments({ following: userId });
+    res.status(200).json({
+      message: `was found ${followers.length} followers`,
+      followers,
+      followersCount,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server internal error", error: error });
   }

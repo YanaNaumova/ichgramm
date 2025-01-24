@@ -18,6 +18,7 @@ function OtherProfile() {
   const { posts } = useSelector((state) => state.posts);
 
   console.log(selectedUser, "selectedUser");
+  console.log(error, "ERROR SELECTED");
 
   const { userId } = useParams();
   const [selectedPost, setSelectedPost] = useState(null);
@@ -68,9 +69,14 @@ function OtherProfile() {
   }
 
   if (error) {
-    return <div className={styles.error}>{error.message}</div>;
+    return (
+      <div className={styles.error}>{error.message || "An error occurred"}</div>
+    );
   }
 
+  if (!selectedUser) {
+    return <div className={styles.error}>User not found or invalid ID</div>;
+  }
   console.log("profile:", store.getState().user); // Текущее состояние
   return (
     <>

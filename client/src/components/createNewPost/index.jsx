@@ -19,6 +19,7 @@ function CreateNewPost({ closeModal }) {
 
   const { user } = useSelector((state) => state.user);
   const { loading, error } = useSelector((state) => state.posts);
+  console.log(error, "ERROR");
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -39,12 +40,17 @@ function CreateNewPost({ closeModal }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!image) {
+      setMessage("Please select an image to upload");
+      setPostSucess(false);
       return;
     }
+
     try {
       await dispatch(createPost({ description, image }));
       dispatch(getProfile());
+
       setMessage("Post created successfully!");
+
       setPostSucess(true);
       setTimeout(() => {
         closeModal();
@@ -53,7 +59,7 @@ function CreateNewPost({ closeModal }) {
       setImage(null);
       setImagePreview(null);
     } catch (err) {
-      setMessage("Error creating post. Please try again.");
+      setMessage(err || "Error creating post. Please try again.");
       setPostSucess(false);
       console.log(err);
     }
@@ -132,7 +138,6 @@ function CreateNewPost({ closeModal }) {
             </div>
           </div>
         </form>
-        {error && <p className={styles.error}>{error.message || error}</p>}
       </div>
     </div>
   );

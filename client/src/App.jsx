@@ -16,17 +16,20 @@ import PostModal from "./components/postModal";
 import PostPage from "./pages/postPage";
 import OtherProfile from "./components/otheProfile";
 import { getProfile } from "../../client/src/redux/slices/userSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 
 function App() {
   // console.log("Текущее состояние стора:", store.getState());
+  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
   useEffect(() => {
     // Диспатчим экшен для получения данных пользователя при загрузке
-    dispatch(getProfile());
-  }, [dispatch]);
+    if (token) {
+      dispatch(getProfile());
+    }
+  }, [dispatch, token]);
   return (
     <div className="App">
       <Routes>

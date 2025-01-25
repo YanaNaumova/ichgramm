@@ -17,6 +17,7 @@ export const addFollowing = createAsyncThunk(
       const response = await apiClient.post(`/follower/following/${followId}`, {
         followId,
       });
+      console.log(response.data.isFollowing, "response.Data");
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error following user");
@@ -30,9 +31,7 @@ export const deleteFollowing = createAsyncThunk(
     try {
       const response = await apiClient.delete(
         `/follower/unfollow/${followId}`,
-        {
-          data: { followId },
-        }
+        { followId }
       );
       return response.data;
     } catch (error) {
@@ -152,7 +151,8 @@ const followSlice = createSlice({
       })
       .addCase(addFollowing.fulfilled, (state, action) => {
         state.loading = false;
-        state.followings = [...state.followings, action.payload];
+        console.log(state.followings, "followings");
+        state.followings = [...state.followings, action.payload.newFollower];
         state.followingsCount += 1;
       })
       .addCase(addFollowing.rejected, (state, action) => {
@@ -165,8 +165,8 @@ const followSlice = createSlice({
       })
       .addCase(deleteFollowing.fulfilled, (state, action) => {
         state.loading = false;
-        state.followings = state.followings.filter(
-          (following) => following._id !== action.payload.following._id
+        state.followers = state.followers.filter(
+          (follower) => follower.following !== action.payload.unfollowedId
         );
         state.followingsCount -= 1;
       })

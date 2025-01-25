@@ -2,6 +2,7 @@ import Follower from "../models/followerModel.js";
 import User from "../models/userModel.js";
 import mongoose from "mongoose";
 
+//добавить подписку
 export async function addFollowing(req, res) {
   try {
     const { followId } = req.params;
@@ -42,7 +43,11 @@ export async function addFollowing(req, res) {
     });
 
     if (existierFollower) {
-      return res.status(400).json({ message: "The following already exists." });
+      return res.status(200).json({
+        message: "The following already exists",
+        newFollower: null,
+        isFollowing: true,
+      });
     }
     const newFollower = new Follower({
       follower: user._id,
@@ -60,9 +65,17 @@ export async function addFollowing(req, res) {
     }
     await user.save();
     await follower.save();
-    res.status(200).json(newFollower);
+    res.status(200).json({
+      message: "Foolowing was adder",
+      isFollowing: false,
+      newFollower,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server internal error", error: error });
+    res.status(500).json({
+      message: "Server internal error",
+      error: error,
+      isFollowing: false,
+    });
   }
 }
 export async function deleteFollowing(req, res) {
@@ -115,13 +128,17 @@ export async function deleteFollowing(req, res) {
 
     await user.save();
     await follower.save();
-    res.status(200).json({ message: "User unfollowed successfully" });
+    res.status(200).json({
+      message: "User unfollowed successfully",
+      unfollowedId: followId,
+    });
   } catch (error) {
     res
       .status(500)
       .json({ message: "Server internal error", error: error.message });
   }
 }
+//получить подписчиков
 export async function getFollowings(req, res) {
   try {
     const userId = req.params.userId || req.user.id;
@@ -129,20 +146,16 @@ export async function getFollowings(req, res) {
     if (!user) {
       return res.status(404).json({ message: "user was not found" });
     }
-    const followings = await Follower.find({ follower: userId })
-      .populate("following", "username email")
-      .exec();
-    if (!followings) {
-      return res.status(404).json({ message: "following was not found" });
-    }
-    if (followings.length === 0) {
-      return res
-        .status(200)
-        .json({
-          message: "following was not found",
-          followings: [],
-          followingsCount: 0,
-        });
+    const followings = await Follower.find({ follower: userId });
+    // .populate("following", "username email")
+    // .exec();
+
+    if (!followings || followings.length === 0) {
+      return res.status(200).json({
+        message: "following was not found",
+        followings: [],
+        followingsCount: 0,
+      });
     }
     const followingsCount = await Follower.countDocuments({ follower: userId });
     res.status(200).json({
@@ -154,6 +167,8 @@ export async function getFollowings(req, res) {
     res.status(500).json({ message: "Server internal error", error: error });
   }
 }
+
+//получить на кого я подписана
 export async function getFollowers(req, res) {
   try {
     const userId = req.params.userId || req.user.id;
@@ -161,15 +176,12 @@ export async function getFollowers(req, res) {
     if (!user) {
       return res.status(404).json({ message: "user was not found" });
     }
-    const followers = await Follower.find({ following: userId })
-      .populate("follower", "username email")
-      .exec();
-    if (!followers) {
-      return res.status(404).json({ message: "followers was not found" });
-    }
+    const followers = await Follower.find({ following: userId });
+    // .populate("follower", "username email")
+    // .exec();
 
-    if (followers.length === 0) {
-      return res.status(404).json({
+    if (!followers || followers.length === 0) {
+      return res.status(200).json({
         message: "followers was not found",
         followers: [],
         followersCount: 0,

@@ -15,7 +15,7 @@ import NotFoundPage from "./pages/notFoundPage";
 import PostModal from "./components/postModal";
 import PostPage from "./pages/postPage";
 import OtherProfile from "./components/otheProfile";
-import { getProfile } from "../../client/src/redux/slices/userSlice";
+import { getProfile } from "./redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 

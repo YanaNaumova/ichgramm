@@ -10,21 +10,29 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { getByUserIdPosts } from "../../redux/slices/postsSlice";
 import { getProfile } from "../../redux/slices/userSlice";
-import { getFollowers, getFollowings } from "../../redux/slices/followSlice";
+import {
+  getFollowings,
+  getFollowers,
+  addFollowing,
+  deleteFollowing,
+} from "../../redux/slices/followSlice";
 
 function OtherProfile() {
+  const { userId } = useParams(); //пользователь другой
   const { selectedUser, loading, error } = useSelector((state) => {
     return state.selectedUser;
   });
   const { user } = useSelector((state) => state.user);
   const { posts } = useSelector((state) => state.posts);
-  const { followersCount, followingsCount } = useSelector(
-    (state) => state.follow
-  );
+  const { followersCount, followingsCount, followings, followers } =
+    useSelector((state) => state.follow);
+
+  console.log(followings, "followings");
+  console.log(followers, "followers");
+
   console.log(followingsCount, "followingsCount");
   console.log(followersCount, "followersCount");
 
-  const { userId } = useParams(); //пользователь другой
   const [selectedPost, setSelectedPost] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -44,8 +52,8 @@ function OtherProfile() {
     if (userId) {
       dispatch(getUserById(userId));
       dispatch(getByUserIdPosts(userId));
-      dispatch(getFollowers(userId));
       dispatch(getFollowings(userId));
+      dispatch(getFollowers(userId));
     }
   }, [dispatch, userId]);
 
@@ -60,9 +68,23 @@ function OtherProfile() {
     navigate("/messages");
   };
 
-  const handleFollow = () => {
-    console.log("follow");
+  const handleFollow = async () => {
+    await dispatch(addFollowing(userId));
+    await dispatch(getFollowings(userId));
+    await dispatch(getFollowers(userId));
   };
+
+  const handleUnfollow = async () => {
+    await dispatch(deleteFollowing(userId));
+    await dispatch(getFollowings(userId));
+    await dispatch(getFollowers(userId));
+  };
+
+  const isFollowing = followers.some((follower) => {
+    return follower?.follower?.toString() === user?._id.toString();
+  });
+
+  console.log(isFollowing, "isFollowing");
 
   const handleImageClick = (post) => {
     setSelectedPost(post);
@@ -108,9 +130,9 @@ function OtherProfile() {
                 <div className={styles.userName}>{selectedUser?.username}</div>
                 <button
                   className={styles.editProfileBtn}
-                  onClick={handleFollow}
+                  onClick={isFollowing ? handleUnfollow : handleFollow}
                 >
-                  Follow
+                  {isFollowing ? "Unfollow" : "Follow"}
                 </button>
                 <button className={styles.logoutBtn} onClick={handleMessage}>
                   Message

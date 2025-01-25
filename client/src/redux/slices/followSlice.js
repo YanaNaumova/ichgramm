@@ -1,12 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../api/apiClient";
 
+const initialState = {
+  followers: [],
+  followings: [],
+  followersCount: 0,
+  followingsCount: 0,
+  loading: false,
+  error: null,
+};
 // Асинхронные экшены
-export const followUser = createAsyncThunk(
+export const addFollowing = createAsyncThunk(
   "follow/addFollowing",
   async (followId, { rejectWithValue }) => {
     try {
-      const response = await apiClient.post("/following/:followId", {
+      const response = await apiClient.post(`/follower/following/${followId}`, {
         followId,
       });
       return response.data;
@@ -16,13 +24,16 @@ export const followUser = createAsyncThunk(
   }
 );
 
-export const unfollowUser = createAsyncThunk(
+export const deleteFollowing = createAsyncThunk(
   "follow/deleteFollowing",
   async (followId, { rejectWithValue }) => {
     try {
-      const response = await apiClient.delete("/unfollow/:followId", {
-        data: { followId },
-      });
+      const response = await apiClient.delete(
+        `/follower/unfollow/${followId}`,
+        {
+          data: { followId },
+        }
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error unfollowing user");
@@ -34,7 +45,7 @@ export const getFollowings = createAsyncThunk(
   "user/getFollowings",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get(`/followings/${userId}`);
+      const response = await apiClient.get(`/follower/followings/${userId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error unfollowing user");
@@ -42,11 +53,33 @@ export const getFollowings = createAsyncThunk(
   }
 );
 
+export const getUserFollowings = createAsyncThunk(
+  "user/getUserFollowings",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.get(`/follower/followings`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Error unfollowing user");
+    }
+  }
+);
+export const getUserFollowers = createAsyncThunk(
+  "user/getUserFollowers",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.get(`/follower/followers`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Error unfollowing user");
+    }
+  }
+);
 export const getFollowers = createAsyncThunk(
   "user/getFollowers",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get(`/followers/${userId}"`);
+      const response = await apiClient.get(`/follower/followers/${userId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error unfollowing user");
@@ -57,49 +90,91 @@ export const getFollowers = createAsyncThunk(
 // Слайс
 const followSlice = createSlice({
   name: "follow",
-  initialState: {
-    loading: false,
-    error: null,
-    follower: null,
-    following: null,
-  },
-  reducers: {
-    clearFollowState: (state) => {
-      state.loading = false;
-      state.error = null;
-    },
-  },
+  initialState,
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(followUser.pending, (state) => {
+      .addCase(getUserFollowings.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.success = null;
       })
-      .addCase(followUser.fulfilled, (state, action) => {
+      .addCase(getUserFollowings.fulfilled, (state, action) => {
         state.loading = false;
-        state.success = action.payload.message;
+        state.followings = action.payload.followings;
+        state.followingsCount = action.payload.followingsCount;
       })
-      .addCase(followUser.rejected, (state, action) => {
+      .addCase(getUserFollowings.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(unfollowUser.pending, (state) => {
+      .addCase(getFollowings.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.success = null;
       })
-      .addCase(unfollowUser.fulfilled, (state, action) => {
+      .addCase(getFollowings.fulfilled, (state, action) => {
         state.loading = false;
-        state.success = action.payload.message;
+        state.followings = action.payload.followings;
+        state.followingsCount = action.payload.followingsCount;
       })
-      .addCase(unfollowUser.rejected, (state, action) => {
+      .addCase(getFollowings.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getUserFollowers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserFollowers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.followers = action.payload.followers;
+        state.followersCount = action.payload.followersCount;
+      })
+      .addCase(getUserFollowers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getFollowers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getFollowers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.followers = action.payload.followers;
+        state.followersCount = action.payload.followersCount;
+      })
+      .addCase(getFollowers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(addFollowing.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addFollowing.fulfilled, (state, action) => {
+        state.loading = false;
+        state.followings = [...state.followings, action.payload];
+        state.followingsCount += 1;
+      })
+      .addCase(addFollowing.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteFollowing.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteFollowing.fulfilled, (state, action) => {
+        state.loading = false;
+        state.followings = state.followings.filter(
+          (following) => following._id !== action.payload.following._id
+        );
+        state.followingsCount -= 1;
+      })
+      .addCase(deleteFollowing.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
-
-export const { clearFollowState } = followSlice.actions;
 
 export default followSlice.reducer;

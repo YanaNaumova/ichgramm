@@ -9,12 +9,20 @@ import store from "../../redux/store";
 import PostModal from "../postModal";
 import { useState } from "react";
 import { getUserPosts } from "../../redux/slices/postsSlice";
+import {
+  getUserFollowings,
+  getUserFollowers,
+} from "../../redux/slices/followSlice";
 
 function Profile() {
   const { user, loading, error } = useSelector((state) => {
     return state.user;
   });
   const { posts } = useSelector((state) => state.posts);
+  const { followers, followings, followersCount, followingsCount } =
+    useSelector((state) => state.follow);
+  console.log(followers, followersCount, "followers");
+  console.log(followings, followingsCount, "followings ");
 
   const [selectedPost, setSelectedPost] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -26,6 +34,8 @@ function Profile() {
   useEffect(() => {
     dispatch(getProfile());
     dispatch(getUserPosts());
+    dispatch(getUserFollowings());
+    dispatch(getUserFollowers());
   }, [dispatch]);
 
   const handleLogout = () => {
@@ -86,10 +96,12 @@ function Profile() {
               <div className={styles.postsNumber}>129</div> posts
             </div>
             <div className={styles.followerInfo}>
-              <div className={styles.followerNumber}>9993</div> followers
+              <div className={styles.followerNumber}>{followersCount}</div>
+              followers
             </div>
             <div className={styles.followingInfo}>
-              <div className={styles.followingNumber}>59</div> following
+              <div className={styles.followingNumber}>{followingsCount}</div>
+              following
             </div>
           </div>
           <div className={styles.profileDescription}>{user?.biography}</div>

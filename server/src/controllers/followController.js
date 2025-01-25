@@ -124,7 +124,7 @@ export async function deleteFollowing(req, res) {
 }
 export async function getFollowings(req, res) {
   try {
-    const { userId } = req.params;
+    const userId = req.params.userId || req.user.id;
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "user was not found" });
@@ -138,13 +138,17 @@ export async function getFollowings(req, res) {
     if (followings.length === 0) {
       return res
         .status(200)
-        .json({ message: "following was not found", followings: [] });
+        .json({
+          message: "following was not found",
+          followings: [],
+          followingsCount: 0,
+        });
     }
-    const followingCount = await Follower.countDocuments({ follower: userId });
+    const followingsCount = await Follower.countDocuments({ follower: userId });
     res.status(200).json({
       message: `was found ${followings.length} following`,
       followings,
-      followingCount,
+      followingsCount,
     });
   } catch (error) {
     res.status(500).json({ message: "Server internal error", error: error });
@@ -152,7 +156,7 @@ export async function getFollowings(req, res) {
 }
 export async function getFollowers(req, res) {
   try {
-    const { userId } = req.params;
+    const userId = req.params.userId || req.user.id;
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "user was not found" });
@@ -165,9 +169,11 @@ export async function getFollowers(req, res) {
     }
 
     if (followers.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "followers was not found", followers: [] });
+      return res.status(404).json({
+        message: "followers was not found",
+        followers: [],
+        followersCount: 0,
+      });
     }
 
     const followersCount = await Follower.countDocuments({ following: userId });

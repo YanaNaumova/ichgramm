@@ -129,7 +129,11 @@ function OtherProfile() {
               <div className={styles.btnContainer}>
                 <div className={styles.userName}>{selectedUser?.username}</div>
                 <button
-                  className={styles.editProfileBtn}
+                  className={
+                    isFollowing
+                      ? styles.editProfilefollowBtn
+                      : styles.editProfileUnfollowBtn
+                  }
                   onClick={isFollowing ? handleUnfollow : handleFollow}
                 >
                   {isFollowing ? "Unfollow" : "Follow"}

@@ -39,7 +39,7 @@
   color: #000000;
 }
 
-.editProfileBtn,
+.editProfilefollowBtn,
 .logoutBtn {
   line-height: 18px;
   color: #000000;
@@ -47,7 +47,24 @@
   font-weight: 600px;
   background-color: #efefef;
   border-radius: 8px;
-  padding: 7px 50px;
+  max-width: 132px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.editProfileUnfollowBtn {
+  line-height: 18px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600px;
+  background-color: #0095f6;
+  border-radius: 8px;
+  max-width: 132px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .postsAndFollowersInfo {

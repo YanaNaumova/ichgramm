@@ -13,6 +13,7 @@ export async function getProfileById(req, res) {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.log("Error 400");
       return res.status(400).json({
         message: `Invalid user ID: ${id}`,
       });
@@ -29,6 +30,7 @@ export async function getProfileById(req, res) {
         },
       });
 
+    console.log(user);
     if (!user) {
       return res.status(404).json({
         message: `User with ID ${id} does not exist`,

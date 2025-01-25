@@ -9,6 +9,7 @@ import PostModal from "../postModal";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { getByUserIdPosts } from "../../redux/slices/postsSlice";
+import { getProfile } from "../../redux/slices/userSlice";
 
 function OtherProfile() {
   const { selectedUser, loading, error } = useSelector((state) => {
@@ -17,10 +18,7 @@ function OtherProfile() {
   const { user } = useSelector((state) => state.user);
   const { posts } = useSelector((state) => state.posts);
 
-  console.log(selectedUser, "selectedUser");
-  console.log(error, "ERROR SELECTED");
-
-  const { userId } = useParams();
+  const { userId } = useParams(); //пользователь другой
   const [selectedPost, setSelectedPost] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -28,10 +26,13 @@ function OtherProfile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user && user._id === userId) {
-      navigate("/profile");
-    }
-  }, [user._id, userId, user, navigate]);
+    const fetchUserProfile = async () => {
+      if (!user || !user?._id) {
+        await dispatch(getProfile());
+      }
+    };
+    fetchUserProfile();
+  }, [user, dispatch]);
 
   useEffect(() => {
     if (userId) {
@@ -40,6 +41,11 @@ function OtherProfile() {
     }
   }, [dispatch, userId]);
 
+  useEffect(() => {
+    if (user && user?._id === userId) {
+      navigate("/profile");
+    }
+  }, [user?._id, userId, user, navigate]);
   // console.log(":", store.getState());
 
   const handleMessage = () => {
@@ -61,10 +67,11 @@ function OtherProfile() {
     setIsOpenModal(false);
     await dispatch(getUserById(userId));
     await dispatch(getByUserIdPosts(userId));
+    await dispatch(getProfile());
     navigate(-1);
   };
 
-  if (loading) {
+  if (!user || !user?._id || loading) {
     return <div>Loading...</div>;
   }
 

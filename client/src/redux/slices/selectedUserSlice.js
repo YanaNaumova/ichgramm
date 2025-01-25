@@ -12,8 +12,10 @@ export const getUserById = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await apiClient.get(`/users/profile/${userId}`);
+      console.log(response.data, "selected response.data");
       return response.data;
     } catch (error) {
+      console.log(error, "error response");
       return rejectWithValue(error.response?.data || error?.message);
     }
   }
@@ -31,10 +33,12 @@ const selectedUserSlice = createSlice({
       })
       .addCase(getUserById.fulfilled, (state, action) => {
         state.loading = false;
+        console.log(action.payload.user, "selected User");
         state.selectedUser = action.payload.user;
       })
       .addCase(getUserById.rejected, (state, action) => {
         state.loading = false;
+        console.log(action.payload, "ERROR Action payload");
         state.error = action.payload;
       });
   },

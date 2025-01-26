@@ -13,9 +13,16 @@ import { getAllCommentsByPost } from "../../redux/slices/commentsSlice";
 import PostModal from "../postModal";
 import { useNavigate } from "react-router-dom";
 import store from "../../redux/store";
+import {
+  getUserFollowings,
+  getUserFollowers,
+  addFollowing,
+  deleteFollowing,
+} from "../../redux/slices/followSlice";
 
 function HomePosts() {
   const { posts, loading } = useSelector((state) => state.posts);
+  const { user } = useSelector((state) => state.user);
   const { postLikesCount, userPostLikes } = useSelector((state) => state.likes);
   const [likedPosts, setLikedPosts] = useState(userPostLikes);
   const [error, setError] = useState(null);
@@ -25,6 +32,12 @@ function HomePosts() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   console.log(loading, error);
   const limit = 30;
+  const { followings } = useSelector((state) => state.follow);
+  const [isFollowing, setIsFollowing] = useState({});
+
+  console.log(followings, "followings");
+
+  console.log(posts, "POSTS");
 
   useEffect(() => {
     const fetchPostsAndLikes = async () => {
@@ -34,6 +47,8 @@ function HomePosts() {
           for (const post of response.posts) {
             await dispatch(getPostLikes(post._id)); // Ждем загрузки лайков для каждого поста
             await dispatch(getAllCommentsByPost(post._id));
+            await dispatch(getUserFollowers());
+            await dispatch(getUserFollowings());
           }
         }
       } catch (error) {
@@ -42,7 +57,20 @@ function HomePosts() {
     };
 
     fetchPostsAndLikes();
-  }, [dispatch]);
+  }, [dispatch, user?._id]);
+
+  useEffect(() => {
+    if (followings?.length) {
+      const followingStatus = {};
+
+      // Заполняем followingStatus только для пользователей из followings
+      followings.forEach((follow) => {
+        followingStatus[follow.following] = true; // Подписаны на этого пользователя
+      });
+
+      setIsFollowing(followingStatus);
+    }
+  }, [followings]);
 
   useEffect(() => {
     // Инициализация локального состояния лайков
@@ -82,75 +110,141 @@ function HomePosts() {
     }
   };
 
+  const handleUnfollow = async (followId) => {
+    try {
+      await dispatch(deleteFollowing(followId));
+      // После успешного удаления подписки, обновляем состояние followings
+      await dispatch(getUserFollowings());
+      await dispatch(getUserFollowers());
+    } catch (error) {
+      console.log("Error unfollowing:", error);
+      setError("Error unfollowing user.");
+    }
+  };
+
+  const handleFollow = async (followId) => {
+    try {
+      await dispatch(addFollowing(followId));
+      // После успешного добавления подписки, обновляем состояние followings
+      await dispatch(getUserFollowings());
+      await dispatch(getUserFollowers());
+    } catch (error) {
+      console.log("Error following:", error);
+      setError("Error following user.");
+    }
+  };
+  const handleClickToFollow = async (e, postUserId) => {
+    e.stopPropagation();
+    const isUserFollowing = isFollowing[postUserId];
+
+    try {
+      if (isUserFollowing) {
+        // Если подписаны, отписываемся
+        await handleUnfollow(postUserId);
+      } else {
+        // Если не подписаны, подписываемся
+        await handleFollow(postUserId);
+      }
+
+      // Локально обновляем состояние после выполнения действия
+      setIsFollowing((prev) => ({
+        ...prev,
+        [postUserId]: !isUserFollowing, // Инвертируем состояние подписки
+      }));
+    } catch (error) {
+      console.error("Error handling follow/unfollow:", error);
+      setError("Error updating follow status.");
+    }
+  };
+
   const handleUserClick = (userId) => {
     navigate(`/profile/${userId}`);
   };
   console.log("Home:", store.getState().user);
+
+  // const isFollowing = followings.some((following) => {
+  //   return following?.following?.toString() === post?.user?._id.toString();
+  // });
+
+  // console.log(isFollowing, "isFollowing");
   return (
     <div className={styles.postsContainer}>
-      {posts?.map((post) => (
-        <div className={styles.postContainer} key={post?._id}>
-          <div className={styles.userInfo}>
-            <img
-              src={post?.user?.avatar || User}
-              alt="user photo"
-              className={`${styles.userPhoto} ${styles.gradient}`}
-              onClick={() => handleUserClick(post?.user?._id)}
-            />
-            <div className={styles.username}>{post?.user?.username}</div>
-            <div className={styles.time}>{`• ${timeAgo(post.createAt)} •`}</div>
-            <button className={styles.followBtn}>follow</button>
-          </div>
-          <img
-            src={post?.image}
-            alt={post?.description}
-            className={styles.postImg}
-            onClick={() => handleImageClick(post)}
-          />
-          <div className={styles.likeUndCommentContainer}>
-            <div className={styles.likeUndCommentImgContainer}>
+      {posts?.map((post) => {
+        const isUserFollowing = isFollowing[post.user._id];
+        return (
+          <div className={styles.postContainer} key={post?._id}>
+            <div className={styles.userInfo}>
               <img
-                src={Like}
-                alt="like"
-                className={`${styles.like} ${
-                  likedPosts[post?._id] ? styles.liked : "" // Меняем цвет сердечка
-                }`}
-                onClick={() => handleTogglePostLike(post?._id)}
+                src={post?.user?.avatar || User}
+                alt="user photo"
+                className={`${styles.userPhoto} ${styles.gradient}`}
+                onClick={() => handleUserClick(post?.user?._id)}
               />
-              <img src={Comment} alt="like" className={styles.commentImg} />
+              <div className={styles.username}>{post?.user?.username}</div>
+              <div className={styles.time}>{`• ${timeAgo(
+                post.createAt
+              )} •`}</div>
+              {post.user._id !== user?._id && ( // Если это не пост текущего пользователя
+                <button
+                  className={styles.followBtn}
+                  onClick={(e) => handleClickToFollow(e, post?.user?._id)}
+                >
+                  {isUserFollowing ? "Unfollow" : "Follow"}{" "}
+                  {/* Кнопка подписки/отписки */}
+                </button>
+              )}
             </div>
-            <div className={styles.likeCount}>
-              {postLikesCount[post?._id] || 0} likes
+            <img
+              src={post?.image}
+              alt={post?.description}
+              className={styles.postImg}
+              onClick={() => handleImageClick(post)}
+            />
+            <div className={styles.likeUndCommentContainer}>
+              <div className={styles.likeUndCommentImgContainer}>
+                <img
+                  src={Like}
+                  alt="like"
+                  className={`${styles.like} ${
+                    likedPosts[post?._id] ? styles.liked : "" // Меняем цвет сердечка
+                  }`}
+                  onClick={() => handleTogglePostLike(post?._id)}
+                />
+                <img src={Comment} alt="like" className={styles.commentImg} />
+              </div>
+              <div className={styles.likeCount}>
+                {postLikesCount[post?._id] || 0} likes
+              </div>
             </div>
-          </div>
-          <div className={styles.postDescriptionContainer}>
-            <div className={styles.fullName}>{post?.user?.full_name}</div>
+            <div className={styles.postDescriptionContainer}>
+              <div className={styles.fullName}>{post?.user?.full_name}</div>
 
-            <div className={styles.description}>
-              {post?.description?.length > limit
-                ? `${post?.description.slice(0, limit)}...` // Убедитесь, что slice вызывается на строке, а не на длине
-                : post?.description}
-            </div>
+              <div className={styles.description}>
+                {post?.description?.length > limit
+                  ? `${post?.description.slice(0, limit)}...` // Убедитесь, что slice вызывается на строке, а не на длине
+                  : post?.description}
+              </div>
 
-            {post?.description?.length > limit && ( // Условие для отображения кнопки "more"
-              <button
-                className={styles.moreBtn}
-                onClick={() => handleImageClick(post)}
-              >
-                more
-              </button>
-            )}
+              {post?.description?.length > limit && ( // Условие для отображения кнопки "more"
+                <button
+                  className={styles.moreBtn}
+                  onClick={() => handleImageClick(post)}
+                >
+                  more
+                </button>
+              )}
+            </div>
+            <button
+              className={styles.commentsContainer}
+              onClick={() => handleImageClick(post)}
+            >
+              {post?.comments?.length > 0
+                ? ` View all comments (${post?.comments?.length})`
+                : `No comments`}
+            </button>
           </div>
-          <button
-            className={styles.commentsContainer}
-            onClick={() => handleImageClick(post)}
-          >
-            {post?.comments?.length > 0
-              ? ` View all comments (${post?.comments?.length})`
-              : `No comments`}
-          </button>
-        </div>
-      ))}
+        );
+      })}
       {selectedPost && (
         <PostModal
           post={selectedPost}

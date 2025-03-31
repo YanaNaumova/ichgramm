@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const authApiClient = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: "https://ichgramm.onrender.com/api",
 });
 
 export default authApiClient;

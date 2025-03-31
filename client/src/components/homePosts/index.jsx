@@ -170,7 +170,7 @@ function HomePosts() {
   return (
     <div className={styles.postsContainer}>
       {posts?.map((post) => {
-        const isUserFollowing = isFollowing[post.user._id];
+        const isUserFollowing = isFollowing[post?.user?._id];
         return (
           <div className={styles.postContainer} key={post?._id}>
             <div className={styles.userInfo}>

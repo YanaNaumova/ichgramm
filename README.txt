@@ -11,7 +11,4 @@
 Die API-Dokumentation ist unter folgendem Link verfügbar:  
 [👉 Postman-Dokumentation öffnen](https://documenter.getpostman.com/view/16197301/2sAYQdkqJ7)  
 
-## 🌐 Demo-Version  
-Die Frontend-Version ist auf GitHub Pages verfügbar:  
-[▶️ Zur Website](https://yananaumova.github.io/ichgramm)  
 

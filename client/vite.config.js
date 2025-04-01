@@ -6,6 +6,7 @@ export default defineConfig({
   server: {
     host: "0.0.0.0", // прослушивание всех интерфейсов
     port: 3001,
+    base: "/ichgramm/",
   },
   plugins: [react()],
 });
